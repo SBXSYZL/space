@@ -8,7 +8,13 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: Home
+    component: Home,
+    children: [
+      {
+        path: '/',
+        component: resolve => require(['../views/Index.vue'], resolve)
+      }
+    ]
   },
   {
     path: '/about',
@@ -25,5 +31,8 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
-
+const routerPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push (location) {
+  return routerPush.call(this, location).catch(error => error)
+}
 export default router
