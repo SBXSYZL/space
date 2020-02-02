@@ -19,7 +19,7 @@
 
       <!--右边 start-->
       <div class="right_div">
-        <div style="cursor:pointer;display: flex;text-align: right;"
+        <div style="margin-left: 50%;cursor:pointer;display: flex;text-align: right;"
              @click="turnOff">
           <img style="height: 25px;width: 27px"
                :src="turn_off_icon"
@@ -65,7 +65,7 @@
 
   .right_div {
     width: 30%;
-    text-align: center;
+    text-align: right;
     margin-top: 1%;
 
   }
