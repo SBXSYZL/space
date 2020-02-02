@@ -22,7 +22,6 @@
         <div style="display: flex;text-align: right;"
              @click="turnOff">
           <img style="height: 30px;width: 32px"
-
                :src="turn_off_icon"
                alt="">
           <div style="margin-top: 1%;margin-left: 3px;color: #20a0ff">退出</div>
