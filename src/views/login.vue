@@ -60,82 +60,97 @@
       return {
         logining: false,
         myForm: {
-          username: "",
-          password: "",
-          select: ""
+          username: '',
+          password: '',
+          select: ''
         },
         myRule: {
-          username: [{required: true, message: "请输入账号", trigger: "blur"}],
-          password: [{required: true, message: "请输入密码", trigger: "blur"}],
-          select: [{required: true, message: "请选择用户类型", trigger: "blur"}],
+          username: [{required: true, message: '请输入账号', trigger: 'blur'}],
+          password: [{required: true, message: '请输入密码', trigger: 'blur'}],
+          select: [{required: true, message: '请选择用户类型', trigger: 'blur'}]
         },
         checked: false,
         options: [
           {
-            value: "学生",
-            label: "学生"
+            value: '学生',
+            label: '学生'
           },
           {
-            value: "教师",
-            label: "教师"
+            value: '教师',
+            label: '教师'
           }
         ],
-        value: ""
-      };
-    },
-    gotoLogin() {
-      this.$router.push({
-        path: "/login"
-      });
+        value: ''
+      }
     },
     methods: {
-      handleSubmit() {
+      handleSubmit: function () {
         this.$refs.myForm.validate(valid => {
           if (valid) {
             this.logining = true;
 
             // 判断是否是学生用户登录
-            if (this.myForm.select === "学生") {
-              if (
-                this.myForm.username === "admin" &&
-                this.myForm.password === "123"
-              ) {
-                this.logining = false;
-                sessionStorage.setItem("user", this.myForm.username);
-                this.$router.push({path: "/About"});
-              } else {
-                this.logining = false;
-                this.$alert("账号或密码错误", "温馨提示", {
-                  confirmButtonText: "确定"
+            if (this.myForm.select === '学生') {
+
+              this.$axios.post("/student/studentLogin", {
+                  params: {
+                    account: this.myForm.username,
+                    password: this.myForm.password
+                  }
+                })
+                .then(res => {
+                  console.log(res);
+                  // if (result.code === 200) {
+                  //   alert("登录成功！");
+                  //   this.logining = false;
+                  //   sessionStorage.setItem('user', this.myForm.username);
+                    this.$router.push({path: '/About'})
+                  // } else {
+                  //   // 失败了
+                  //   alert("登录失败！");
+                  //}
                 });
-              }
+
+
+              // if (
+              //   this.myForm.username === 'admin' &&
+              //   this.myForm.password === '123'
+              // ) {
+              //   this.logining = false;
+              //   sessionStorage.setItem('user', this.myForm.username);
+              //   this.$router.push({path: '/About'})
+              // } else {
+              //   this.logining = false;
+              //   this.$alert('账号或密码错误', '温馨提示', {
+              //     confirmButtonText: '确定'
+              //   })
+              //}
             }
             // 判断是否是教师账户登录
-            else if (this.myForm.select === "教师") {
+            else if (this.myForm.select === '教师') {
               if (
-                this.myForm.username === "admin2" &&
-                this.myForm.password === "123"
+                this.myForm.username === 'admin2' &&
+                this.myForm.password === '123'
               ) {
                 this.logining = false;
-                sessionStorage.setItem("user", this.myForm.username);
-                this.$router.push({path: "/About"});
+                sessionStorage.setItem('user', this.myForm.username);
+                this.$router.push({path: '/About'})
               } else {
                 this.logining = false;
-                this.$alert("账号或密码错误", "温馨提示", {
-                  confirmButtonText: "确定"
-                });
+                this.$alert('账号或密码错误', '温馨提示', {
+                  confirmButtonText: '确定'
+                })
               }
             }
-
-          } else {
-            console.log("error submit!");
-            return false;
+          }else {
+            console.log('error submit!');
+            return false
           }
-        });
+        })
       }
     }
 
-  };
+  }
 </script>
 
 <style>
