@@ -1,12 +1,12 @@
 <template>
   <div>
-    首页测试
+    选择课程
   </div>
 </template>
 
 <script>
   export default {
-    name: 'Index'
+    name: 'SelectCourse'
   }
 </script>
 

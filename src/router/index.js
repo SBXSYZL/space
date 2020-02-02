@@ -11,8 +11,32 @@ const routes = [
     component: Home,
     children: [
       {
+        path: '/createCourse',
+        component: resolve => require(['../views/CreateCourse.vue'], resolve)
+      },
+      {
+        path: '/selectCourse',
+        component: resolve => require(['../views/SelectCourse.vue'], resolve)
+      },
+      {
+        path: '/createLesson',
+        component: resolve => require(['../views/CreateLesson.vue'], resolve)
+      },
+      {
+        path: '/selectLesson',
+        component: resolve => require(['../views/SelectLesson.vue'], resolve)
+      },
+      {
+        path: '/message',
+        component: resolve => require(['../views/Message.vue'], resolve)
+      },
+      {
+        path: '/contact',
+        component: resolve => require(['../views/Contact.vue'], resolve)
+      },
+      {
         path: '/',
-        component: resolve => require(['../views/Index.vue'], resolve)
+        redirect: '/createCourse'
       }
     ]
   },

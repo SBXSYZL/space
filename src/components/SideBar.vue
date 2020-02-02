@@ -43,12 +43,12 @@
               {
                 menuId: 1,
                 name: '新建课程',
-                path: ''
+                path: '/createCourse'
               },
               {
                 menuId: 2,
                 name: '选择课程',
-                path: ''
+                path: '/selectCourse'
               }
             ]
           },
@@ -60,12 +60,12 @@
               {
                 menuId: 3,
                 name: '新建课时',
-                path: ''
+                path: '/createLesson'
               },
               {
                 menuId: 4,
                 name: '选择课时',
-                path: ''
+                path: '/selectLesson'
               }
             ]
           },
@@ -77,12 +77,12 @@
               {
                 menuId: 5,
                 name: '信息',
-                path: ''
+                path: '/message'
               },
               {
                 menuId: 6,
                 name: '联系人',
-                path: ''
+                path: '/contact'
               }
             ]
           },
@@ -105,7 +105,7 @@
     methods: {
       activeBtn (index, path) {
         this.defaultActive = index
-        console.log(index, path)
+        this.$router.replace(path)
       }
     }
   }

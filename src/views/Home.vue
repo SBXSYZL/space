@@ -14,7 +14,14 @@
       <!--sidebar start-->
       <!--main body start-->
       <div class="main">
-        <router-view/>
+        <transition name="move"
+                    mode="out-in">
+          <template>
+            <keep-alive>
+              <router-view/>
+            </keep-alive>
+          </template>
+        </transition>
       </div>
       <!--main body start-->
     </div>
