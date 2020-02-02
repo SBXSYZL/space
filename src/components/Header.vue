@@ -16,12 +16,16 @@
         <h3>V R 空 间 感</h3>
       </div>
       <!--中间 end-->
-      <img style="margin-top: 1%;text-align: center;height: 30px;width: 30px"
-           @click="turnOff"
-           :src="turn_off_icon"
-           alt="">
+
       <!--右边 start-->
       <div class="right_div">
+        <div style="display: flex;text-align: right;">
+          <img style="height: 30px;width: 32px"
+               @click="turnOff"
+               :src="turn_off_icon"
+               alt="">
+          <div style="margin-top: 1%;margin-left: 3px;color: #20a0ff">退出</div>
+        </div>
 
       </div>
       <!--右边 end-->
@@ -62,7 +66,9 @@
 
   .right_div {
     width: 30%;
-    align-content: end;
+    text-align: center;
+    margin-top: 1%;
+
   }
 
 </style>
