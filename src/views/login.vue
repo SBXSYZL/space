@@ -3,11 +3,11 @@
     <el-form
       :model="myForm"
       :rules="myRule"
-      status-icon
-      ref="myForm"
+      class="demo-ruleForm login-page"
       label-position="left"
       label-width="0px"
-      class="demo-ruleForm login-page"
+      ref="myForm"
+      status-icon
     >
       <el-form-item prop="title">
         <center>
@@ -16,35 +16,36 @@
       </el-form-item>
 
       <el-form-item prop="select">
-        <el-select v-model="myForm.select" placeholder="请选择用户类型" style="width:100%">
+        <el-select placeholder="请选择用户类型" style="width:100%" v-model="myForm.select">
           <el-option
-            v-for="item in options"
             :key="item.value"
             :label="item.label"
             :value="item.value"
+            v-for="item in options"
           ></el-option>
         </el-select>
       </el-form-item>
 
       <el-form-item prop="username">
-        <el-input type="text" v-model="myForm.username" auto-complete="off" placeholder="请输入用户名"/>
+        <el-input auto-complete="off" placeholder="请输入用户名" type="text" v-model="myForm.username"/>
       </el-form-item>
       <el-form-item prop="password">
         <el-input
-          type="password"
-          v-model="myForm.password"
           auto-complete="off"
           placeholder="请输入密码"
+          type="password"
+          v-model="myForm.password"
         />
       </el-form-item>
       <el-form-item style="width:100%;">
         <el-button
-          type="primary"
-          style="width:100%;"
-          @click="handleSubmit"
           :loading="logining"
+          @click="handleSubmit"
           round
+          style="width:100%;"
+          type="primary"
         >登录
+
         </el-button>
       </el-form-item>
 
