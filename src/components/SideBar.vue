@@ -124,10 +124,12 @@
     min-height: 40px;
     padding-top: 6px;
     text-align: start;
+    cursor: pointer;
   }
 
   .active_menu {
     background: #f55d54;
     color: #ffffff;
+
   }
 </style>
