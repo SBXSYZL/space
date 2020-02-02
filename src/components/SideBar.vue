@@ -116,6 +116,7 @@
     background: #ffffff;
     /*border-radius: 0.5em;*/
     text-align: center;
+    padding-bottom: 5px;
     margin-bottom: 5px;
     min-height: 30px;
   }

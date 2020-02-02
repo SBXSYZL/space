@@ -26,7 +26,6 @@
                alt="">
           <div style="margin-top: 1%;margin-left: 3px;color: #f55d54">退出</div>
         </div>
-
       </div>
       <!--右边 end-->
     </div>
