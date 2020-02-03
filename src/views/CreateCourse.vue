@@ -11,7 +11,7 @@
     </div>
     <!--头部部分 end-->
 
-    
+
     <div style="margin-top: 3%;height: 90%;">
       <div style="width: 50%;min-height: 500px;margin-right: 5%;margin-left: 5%; position:absolute;">
          <!--课程名称 start-->
