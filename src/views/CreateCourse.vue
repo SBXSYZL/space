@@ -43,7 +43,6 @@
           <!--课程描述 start-->
           <el-form-item label="课程描述">
             <el-input
-              show-word-limit
               style="width: 350px"
               type="textarea"
               resize="none"
