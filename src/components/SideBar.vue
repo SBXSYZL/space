@@ -9,7 +9,10 @@
           <img style="height: 20px;width: 20px" :src="item.icon"/>
         </div>
         <div style="margin-top: 2px;width: 80%;text-align: start">
-          {{item.title}}
+          <h4>
+            {{item.title}}
+          </h4>
+
         </div>
       </div>
       <!--一级标签 end-->
@@ -21,8 +24,11 @@
              :class="{active_menu:defaultActive===menu_item.menuId,
              menu_it:defaultActive!==menu_item.menuId}"
              :key="menu_item.menuId">
-          <div style="padding-left: 28%">
-            {{menu_item.name}}
+          <div style="padding-left: 35%">
+            <p>
+              {{menu_item.name}}
+            </p>
+
           </div>
 
         </div>
@@ -123,11 +129,12 @@
     padding-bottom: 5px;
     margin-bottom: 5px;
     min-height: 30px;
+    padding-top: 17%;
   }
 
   .menu_item {
     min-height: 40px;
-    padding-top: 6px;
+    padding-top: 10px;
     text-align: start;
     cursor: pointer;
   }

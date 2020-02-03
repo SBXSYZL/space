@@ -48,7 +48,7 @@
 </script>
 <style scoped>
   .background {
-    background: #bdbdbd;
+    background: #f3f3f3;
   }
 
   .header {
@@ -66,13 +66,13 @@
   }
 
   .side {
-    min-width: 13%;
-    min-height: 100%;
+    width: 10%;
+    height: 100%;
   }
 
   .main {
     margin-left: 20px;
-    width: 85%;
+    width: 90%;
     height: 95%;
     background: #ffffff;
   }
