@@ -14,9 +14,9 @@
     <div style="margin-top: 3%;height: 90%;">
       <div style="width: 50%;min-height: 500px;margin-right: 5%;margin-left: 5%; position:absolute;">
          <!--课程名称 start-->
-        <el-form :model="sizeForm" label-width="80px"  ref="form" size="medium">
+        <el-form :model="createCourseForm" label-width="80px" ref="form" size="medium">
         <el-form-item label="课程名称">
-          <el-input style="width: 250px" v-model="sizeForm.name" placeholder="请输入课程名" clearable></el-input>
+          <el-input style="width: 250px" v-model="createCourseForm.courseName" placeholder="请输入课程名" clearable></el-input>
         </el-form-item>
         <!--课程名称 end-->
         <!--截止日期 start-->
@@ -24,7 +24,7 @@
           <div class="block">
             <el-date-picker
               style="width: 250px"
-              v-model="value1"
+              v-model="deadline"
               type="daterange"
               range-separator="至"
               start-placeholder="开始日期"
@@ -48,7 +48,7 @@
               resize="none"
               :autosize="{ minRows: 4, maxRows: 8}"
               placeholder="请输入内容"
-              v-model="textarea">
+              v-model="courseDescription">
             </el-input>
           </el-form-item>
           <!--课程描述 end-->
@@ -69,18 +69,11 @@
     name: 'CreateCourse',
     data() {
       return {
-        sizeForm: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: '',
+        createCourseForm: {
+          courseName: '',
         },
-        value1: '',
-        textarea: '',
+        deadline: '',
+        courseDescription: '',
         num: 1
       };
     },
