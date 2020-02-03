@@ -43,6 +43,7 @@
     methods: {
       turnOff () {
         console.log('退出')
+        this.$router.push({path: '/login'})
       }
     }
   }
