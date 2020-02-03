@@ -28,9 +28,7 @@
             <p>
               {{menu_item.name}}
             </p>
-
           </div>
-
         </div>
       </div>
       <!--二级标签按钮 end-->
@@ -109,15 +107,30 @@
             ]
           }
         ],
-        defaultActive: 1
+        defaultActive: 1,
+        defaultActivePath: '/createCourse'
       }
     },
     methods: {
       activeBtn (index, path) {
         this.defaultActive = index
-        this.$router.replace(path)
+        this.defaultActivePath = path
+        sessionStorage.setItem('defaultActive', index)
+        this.$router.replace(path).catch(err => {
+
+        })
       }
-    }
+    },
+    // created () {
+    //   console.log(sessionStorage.getItem('defaultActive'))
+    //
+    //   if (window.performance.navigation.type === 1) {
+    //     this.defaultActive = sessionStorage.getItem('defaultActive')
+    //     console.log(this.defaultActive)
+    //   } else {
+    //     console.log('首次进入')
+    //   }
+    // }
   }
 </script>
 

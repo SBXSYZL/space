@@ -48,6 +48,7 @@
 </script>
 <style scoped>
   .background {
+    min-width: 750px;
     background: #f3f3f3;
   }
 
@@ -67,6 +68,7 @@
 
   .side {
     width: 10%;
+    min-width: 120px;
     height: 100%;
   }
 
