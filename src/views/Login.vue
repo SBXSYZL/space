@@ -127,7 +127,7 @@
                   that.open();
                   that.logining = false;
                   sessionStorage.setItem('user', that.myForm.username);
-                  that.$router.push({path: '/About'})
+                  that.$router.push({path: '/'})
                 } else {
                   that.logining = false;
                   that.$alert('账号或密码错误', '温馨提示', {
