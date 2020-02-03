@@ -13,6 +13,8 @@ Vue.config.productionTip = false
 Vue.use(Element, {
   size: 'small'
 })
+
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 Vue.prototype.$axios = axios
 new Vue({
   router,
