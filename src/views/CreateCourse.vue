@@ -11,19 +11,19 @@
     </div>
     <!--头部部分 end-->
 
-    <div style="margin-top: 2%;height: 90%;size: landscape">
-      <div style="width: 20%;min-height: 500px;margin-right: 5%;margin-left: 30%; position:absolute; ">
+    <div style="margin-top: 3%;height: 90%;">
+      <div style="width: 50%;min-height: 500px;margin-right: 5%;margin-left: 5%; position:absolute;">
          <!--课程名称 start-->
-        <el-form :model="sizeForm" label-width="80px" ref="form" size="mini">
+        <el-form :model="sizeForm" label-width="80px"  ref="form" size="medium">
         <el-form-item label="课程名称">
-          <el-input style="width: 60%" v-model="sizeForm.name" placeholder="请输入课程名"></el-input>
+          <el-input style="width: 250px" v-model="sizeForm.name" placeholder="请输入课程名" clearable></el-input>
         </el-form-item>
         <!--课程名称 end-->
         <!--截止日期 start-->
         <el-form-item label="截止日期">
           <div class="block">
             <el-date-picker
-              style="width: 60%"
+              style="width: 250px"
               v-model="value1"
               type="daterange"
               range-separator="至"
@@ -36,16 +36,18 @@
 
           <!--课时选择 start-->
           <el-form-item label="课时数量">
-          <el-input-number v-model="num" controls-position="right" @change="handleChange" :min="1" :max="48" style="width:26%"></el-input-number>
+          <el-input-number v-model="num" controls-position="right" @change="handleChange" :min="1" :max="48" style="width:100px"></el-input-number>
           </el-form-item>
           <!--课时选择 end-->
 
           <!--课程描述 start-->
           <el-form-item label="课程描述">
             <el-input
-              style="width: 100%"
+              show-word-limit
+              style="width: 350px"
               type="textarea"
-              :rows="5"
+              resize="none"
+              :autosize="{ minRows: 4, maxRows: 8}"
               placeholder="请输入内容"
               v-model="textarea">
             </el-input>
@@ -53,8 +55,8 @@
           <!--课程描述 end-->
 
           <el-form-item size="large">
-            <el-button @click="onSubmit" type="danger" style="width: 40%;margin-right: 5%">提交</el-button>
-            <el-button style="width: 40%">取消</el-button>
+            <el-button @click="onSubmit" type="danger" style="width: 180px;margin-right: 5%">提交</el-button>
+            <el-button style="width: 180px">取消</el-button>
           </el-form-item>
       </el-form>
     </div>
