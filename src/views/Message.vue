@@ -182,10 +182,11 @@
 
 <style scoped>
   .talk_title {
-    font-family: 黑体, serif;
+    font-family: 微软雅黑, serif;
     margin-left: 5%;
     color: #f55d54;
     text-align: left;
+    font-size: 20px;
   }
 
   .divide_1 {
@@ -200,6 +201,7 @@
     margin-top: 1%;
     margin-left: 5%;
     text-align: left;
+    font-size: 15px;
   }
 
   .divide_2 {
