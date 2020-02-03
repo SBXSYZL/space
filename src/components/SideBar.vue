@@ -15,10 +15,11 @@
       <!--一级标签 end-->
       <!--二级标签按钮 start-->
       <div>
-        <div id="menu_it" class="menu_item"
+        <div class="menu_item"
              v-for="menu_item in item.menu"
              @click="activeBtn(menu_item.menuId,menu_item.path)"
-             :class="{active_menu:defaultActive===menu_item.menuId}"
+             :class="{active_menu:defaultActive===menu_item.menuId,
+             menu_it:defaultActive!==menu_item.menuId}"
              :key="menu_item.menuId">
           <div style="padding-left: 28%">
             {{menu_item.name}}
@@ -136,7 +137,7 @@
     color: #ffffff;
   }
 
-  #menu_it:hover {
+  .menu_it:hover {
     background: #eaeaea;
   }
 </style>
