@@ -92,10 +92,10 @@
             // 判断是否是学生用户登录
             if (this.myForm.select === '学生') {
 
-              this.$axios.post("/student/studentLogin", {
+              this.$axios.post("/api/student/studentLogin", {
                     account: this.myForm.username,
                     password: this.myForm.password
-                  
+
                 })
                 .then(res => {
                   console.log(res);
