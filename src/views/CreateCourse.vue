@@ -14,9 +14,9 @@
     <div style="margin-top: 3%;height: 90%;">
       <div style="width: 50%;min-height: 500px;margin-right: 5%;margin-left: 5%; position:absolute;">
          <!--课程名称 start-->
-        <el-form :model="createCourseForm" label-width="80px" ref="form" size="medium">
+        <el-form  label-width="80px" ref="form" size="medium">
         <el-form-item label="课程名称">
-          <el-input style="width: 250px" v-model="createCourseForm.courseName" placeholder="请输入课程名" clearable></el-input>
+          <el-input style="width: 250px" v-model="courseName" placeholder="请输入课程名" clearable></el-input>
         </el-form-item>
         <!--课程名称 end-->
         <!--截止日期 start-->
@@ -70,9 +70,7 @@
     name: 'CreateCourse',
     data() {
       return {
-        createCourseForm: {
-          courseName: '',
-        },
+        courseName: '',
         deadline: '',
         courseDescription: '',
         num: 1
