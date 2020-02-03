@@ -11,7 +11,7 @@
       <div class="side">
         <SideBar/>
       </div>
-      <!--sidebar start-->
+      <!--sidebar end-->
       <!--main body start-->
       <div class="main">
         <transition name="move"
@@ -43,6 +43,9 @@
     },
     methods: {},
     created () {
+      if (!sessionStorage.getItem('user')) {
+        this.$router.replace('/login')
+      }
     }
   }
 </script>

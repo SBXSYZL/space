@@ -1,37 +1,39 @@
 <template>
   <div class="wrapper">
-    <div class="menu"
-         v-for="item in titles"
-         :key="item.id">
-      <!--一级标签 start-->
-      <div style="padding-top: 5px;height:30px;display: flex; vertical-align: center;align-content: start">
-        <div style="margin-top: 3px;padding-right: 5px;width: 20%;text-align: right;vertical-align: center">
-          <img style="height: 20px;width: 20px" :src="item.icon"/>
-        </div>
-        <div style="margin-top: 2px;width: 80%;text-align: start">
-          <h4>
-            {{item.title}}
-          </h4>
+    <div>
+      <div class="menu"
+           v-for="item in titles"
+           :key="item.id">
+        <!--一级标签 start-->
+        <div style="padding-top: 5px;height:30px;display: flex; vertical-align: center;align-content: start">
+          <div style="margin-top: 3px;padding-right: 5px;width: 20%;text-align: right;vertical-align: center">
+            <img style="height: 20px;width: 20px" :src="item.icon"/>
+          </div>
+          <div style="margin-top: 2px;width: 80%;text-align: start">
+            <h4>
+              {{item.title}}
+            </h4>
 
-        </div>
-      </div>
-      <!--一级标签 end-->
-      <!--二级标签按钮 start-->
-      <div>
-        <div class="menu_item"
-             v-for="menu_item in item.menu"
-             @click="activeBtn(menu_item.menuId,menu_item.path)"
-             :class="{active_menu:defaultActive===menu_item.menuId,
-             menu_it:defaultActive!==menu_item.menuId}"
-             :key="menu_item.menuId">
-          <div style="padding-left: 35%">
-            <p>
-              {{menu_item.name}}
-            </p>
           </div>
         </div>
+        <!--一级标签 end-->
+        <!--二级标签按钮 start-->
+        <div>
+          <div class="menu_item"
+               v-for="menu_item in item.menu"
+               @click="activeBtn(menu_item.menuId,menu_item.path)"
+               :class="{active_menu:defaultActive==menu_item.menuId,
+             menu_it:defaultActive!=menu_item.menuId}"
+               :key="menu_item.menuId">
+            <div style="padding-left: 35%">
+              <p>
+                {{menu_item.name}}
+              </p>
+            </div>
+          </div>
+        </div>
+        <!--二级标签按钮 end-->
       </div>
-      <!--二级标签按钮 end-->
     </div>
   </div>
 </template>
@@ -107,37 +109,32 @@
             ]
           }
         ],
-        defaultActive: 1,
-        defaultActivePath: '/createCourse'
+        defaultActive: 1
       }
     },
+
     methods: {
       activeBtn (index, path) {
-        sessionStorage.setItem('defaultActive', index)
-        this.defaultActive = index
-        this.defaultActivePath = path
-        this.$router.replace(path)
+        //如果session存在当前菜单ID
+        if (sessionStorage.getItem('defaultActive')) {
+          //且
+          if (sessionStorage.getItem('defaultActive') != index) {
+            sessionStorage.setItem('defaultActive', index)
+            this.defaultActive = index
+            this.$router.replace(path)
+          }
+        } else {
+          sessionStorage.setItem('defaultActive', index)
+          this.defaultActive = index
+          this.$router.replace(path)
+        }
+
       }
     },
-    beforeMount () {
-      // console.log(this.$route.name)
-      // for (const item in this.titles) {
-      //   for (const i in this.titles[item].menu) {
-      //     if (this.titles[item].menu[i].path === '/' + this.$route.name) {
-      //       this.defaultActive = this.titles[item].menu[i].menuId;
-      //       break;
-      //     }
-      //   }
-      // }
-      // console.log(sessionStorage.getItem('defaultActive'))
-      //
-      // if (window.performance.navigation.type === 1) {
-      //   this.defaultActive = sessionStorage.getItem('defaultActive')
-      //   console.log(this.defaultActive)
-      // } else {
-      //   console.log('首次进入')
-      // }
-      // console.log('default ' + this.defaultActive)
+    created () {
+      if (sessionStorage.getItem('defaultActive')) {
+        this.defaultActive = sessionStorage.getItem('defaultActive')
+      }
     }
   }
 </script>
