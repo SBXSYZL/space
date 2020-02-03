@@ -43,7 +43,7 @@
           @click="handleSubmit"
           round
           style="width:100%;"
-          type="primary"
+          type="danger"
         >登录
 
         </el-button>
@@ -56,6 +56,7 @@
 
 <script>
   export default {
+
     data() {
       return {
         logining: false,
@@ -84,64 +85,62 @@
       }
     },
     methods: {
+      openFullScreen() {
+        this.fullscreenLoading = true;
+        setTimeout(() => {
+          this.fullscreenLoading = false;
+        }, 2000);
+      },
+      open() {
+        this.$message({
+          message: '登录成功',
+          type: 'success'
+        });
+      },
       handleSubmit: function () {
-        this.$refs.myForm.validate(valid => {
+        const that = this;
+        let url;
+        that.$refs.myForm.validate(valid => {
           if (valid) {
             this.logining = true;
 
             // 判断是否是学生用户登录
             if (this.myForm.select === '学生') {
-
-              this.$axios.post("/api/student/studentLogin", {
-                    account: this.myForm.username,
-                    password: this.myForm.password
-
-                })
-                .then(res => {
-                  console.log(res);
-                  // if (result.code === 200) {
-                  //   alert("登录成功！");
-                  //   this.logining = false;
-                  //   sessionStorage.setItem('user', this.myForm.username);
-                    this.$router.push({path: '/About'})
-                  // } else {
-                  //   // 失败了
-                  //   alert("登录失败！");
-                  //}
-                });
-
-
-              // if (
-              //   this.myForm.username === 'admin' &&
-              //   this.myForm.password === '123'
-              // ) {
-              //   this.logining = false;
-              //   sessionStorage.setItem('user', this.myForm.username);
-              //   this.$router.push({path: '/About'})
-              // } else {
-              //   this.logining = false;
-              //   this.$alert('账号或密码错误', '温馨提示', {
-              //     confirmButtonText: '确定'
-              //   })
-              //}
+              url = '/api/student/studentLogin'
             }
             // 判断是否是教师账户登录
             else if (this.myForm.select === '教师') {
-              if (
-                this.myForm.username === 'admin2' &&
-                this.myForm.password === '123'
-              ) {
-                this.logining = false;
-                sessionStorage.setItem('user', this.myForm.username);
-                this.$router.push({path: '/About'})
-              } else {
-                this.logining = false;
-                this.$alert('账号或密码错误', '温馨提示', {
-                  confirmButtonText: '确定'
-                })
-              }
+              url = '/api/teacher/teacherLogin'
             }
-          }else {
+
+            let param = new URLSearchParams();
+            param.append('account', this.myForm.username);
+            param.append('password', this.myForm.password);
+            this.$axios.post(url, param)
+              .then(function (response) {
+                console.log(response);
+
+                if (
+                  response.data.status === "success" &&
+                  response.data.data === "success"
+                ) {
+                  that.open();
+                  that.logining = false;
+                  sessionStorage.setItem('user', that.myForm.username);
+                  that.$router.push({path: '/About'})
+                } else {
+                  that.logining = false;
+                  that.$alert('账号或密码错误', '温馨提示', {
+                    confirmButtonText: '确定'
+                  })
+                }
+
+
+              }).bind(this)
+              .catch(function (error) {
+                console.log(error)
+              })
+          } else {
             console.log('error submit!');
             return false
           }
@@ -166,7 +165,7 @@
     padding: 35px 35px 15px;
     background: #fff;
     border: 1px solid #eaeaea;
-    box-shadow: 0 0 25px #cac6c6;
+    box-shadow: 0 0 10px #cac6c6;
   }
 
   label.el-checkbox.rememberme {

@@ -52,7 +52,7 @@
       <el-form-item prop="contact">
         <el-input
           type="contact"
-          v-model="myForm.contact"
+          v-model="myForm.tel"
           auto-complete="off"
           placeholder="请输入联系方式"
         />
@@ -60,7 +60,7 @@
 
       <el-form-item style="width:100%;">
         <el-button
-          type="primary"
+          type="danger"
           style="width:100%;"
           @click="handleSubmit"
           :loading="logining"
@@ -74,29 +74,38 @@
 <script>
 export default {
   data() {
+    const validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'));
+      } else if (value !== this.myForm.firstPassword) {
+        callback(new Error('两次输入密码不一致!'));
+      } else {
+        callback();
+      }
+    };
+
     return {
-      logining: false,
       myForm: {
         username: "",
         firstPassword: "",
         secondPassword: "",
         select:"",
-        contact:""
+        tel:""
       },
       myRule: {
         username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
         firstPassword: [{ required: true, message: "请输入密码", trigger: "blur" }],
-        secondPassword: [{ required: true, message: "请再次输入密码", trigger: "blur" }],
+        secondPassword: [{ validator: validatePass, trigger: 'blur'}],
         select:   [{ required: true, message: "请选择用户类型", trigger: "blur" }],
       },
       checked: false,
       options: [
         {
-          value: "选项1",
+          value: "学生",
           label: "学生"
         },
         {
-          value: "选项2",
+          value: "教师",
           label: "教师"
         }
       ],
@@ -105,27 +114,54 @@ export default {
   },
   methods: {
     handleSubmit() {
-      this.$refs.myForm.validate(valid => {
+      const that = this;
+      let url;
+      that.$refs.myForm.validate(valid => {
         if (valid) {
-          this.logining = true;
-          if (
-            this.myForm.username === "admin" &&
-            this.myForm.password === "123"
-          ) {
-            this.logining = false;
-            sessionStorage.setItem("user", this.myForm.username);
-            this.$router.push({ path: "/" });
-          } else {
-            this.logining = false;
-            this.$alert("账号或密码错误", "温馨提示", {
-              confirmButtonText: "确定"
-            });
+
+          // 判断是否是学生用户注册
+          if (this.myForm.select === '学生') {
+            url = '/api/student/studentRegistered'
           }
+          // 判断是否是教师账户注册
+          else if (this.myForm.select === '教师') {
+            url = '/api/teacher/teacherRegistered'
+          }
+
+          let param = new URLSearchParams();
+          param.append('account', this.myForm.username);
+          param.append('nickName', this.myForm.tel);
+          param.append('password', this.myForm.secondPassword);
+          param.append('tel', this.myForm.tel);
+
+          this.$axios.post(url, param)
+            .then(function (response) {
+              console.log(response);
+
+              if (
+                response.data.status === "success" &&
+                response.data.data === "success"
+              ) {
+                that.open();
+                that.logining = false;
+                sessionStorage.setItem('user', that.myForm.username);
+                that.$router.push({path: '/About'})
+              } else if(response.data.status === "fail") {
+                that.$alert(response.data.data.errMsg, '温馨提示', {
+                  confirmButtonText: '确定'
+                })
+              }
+
+
+            }).bind(this)
+            .catch(function (error) {
+              console.log(error)
+            })
         } else {
-          console.log("error submit!");
-          return false;
+          console.log('error submit!');
+          return false
         }
-      });
+      })
     }
   }
 };
