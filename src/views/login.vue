@@ -93,10 +93,9 @@
             if (this.myForm.select === '学生') {
 
               this.$axios.post("/student/studentLogin", {
-                  params: {
                     account: this.myForm.username,
                     password: this.myForm.password
-                  }
+                  
                 })
                 .then(res => {
                   console.log(res);
