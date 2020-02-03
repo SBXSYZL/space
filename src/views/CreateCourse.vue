@@ -52,11 +52,12 @@
             </el-input>
           </el-form-item>
           <!--课程描述 end-->
-
+          <!--按钮 start-->
           <el-form-item size="large">
             <el-button @click="onSubmit" type="danger" style="width: 180px;margin-right: 5%">提交</el-button>
             <el-button style="width: 180px">取消</el-button>
           </el-form-item>
+          <!--按钮 end-->
       </el-form>
     </div>
 
