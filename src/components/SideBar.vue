@@ -3,6 +3,7 @@
     <div class="menu"
          v-for="item in titles"
          :key="item.id">
+      <!--一级标签 start-->
       <div style="padding-top: 5px;height:30px;display: flex; vertical-align: center;align-content: start">
         <div style="margin-top: 3px;padding-right: 5px;width: 20%;text-align: right;vertical-align: center">
           <img style="height: 20px;width: 20px" :src="item.icon"/>
@@ -11,8 +12,10 @@
           {{item.title}}
         </div>
       </div>
+      <!--一级标签 end-->
+      <!--二级标签按钮 start-->
       <div>
-        <div class="menu_item"
+        <div id="menu_it" class="menu_item"
              v-for="menu_item in item.menu"
              @click="activeBtn(menu_item.menuId,menu_item.path)"
              :class="{active_menu:defaultActive===menu_item.menuId}"
@@ -23,7 +26,7 @@
 
         </div>
       </div>
-
+      <!--二级标签按钮 end-->
     </div>
   </div>
 </template>
@@ -131,6 +134,9 @@
   .active_menu {
     background: #f55d54;
     color: #ffffff;
+  }
 
+  #menu_it:hover {
+    background: #eaeaea;
   }
 </style>
