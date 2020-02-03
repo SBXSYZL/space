@@ -48,7 +48,7 @@
 </script>
 <style scoped>
   .background {
-    background: #a6a6a6;
+    background: #bdbdbd;
   }
 
   .header {
