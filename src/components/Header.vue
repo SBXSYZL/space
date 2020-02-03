@@ -7,7 +7,7 @@
           <h2 style="font-family: 等线;color: #717171">教师</h2>
         </div>
         <div style="padding-top: 2px;margin-left: 30px">
-          <a href="#" style="color: #20a0ff">{{userName}}</a>
+          <a href="#" style="color: #20a0ff">王祖贤</a>
         </div>
       </div>
       <!--左边 end-->
@@ -37,18 +37,14 @@
     name: 'Header',
     data () {
       return {
-        turn_off_icon: require('../assets/turn_off.png'),
-        userName: ''
+        turn_off_icon: require('../assets/turn_off.png')
       }
     },
     methods: {
       turnOff () {
-        sessionStorage.clear()
-        this.$router.replace('/login')
+        console.log('退出')
+        this.$router.push({path: '/login'})
       }
-    },
-    created () {
-      this.userName=sessionStorage.getItem('userName')
     }
   }
 </script>
