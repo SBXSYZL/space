@@ -16,22 +16,27 @@ const routes = [
       },
       {
         path: '/selectCourse',
+        name: 'selectCourse',
         component: resolve => require(['../views/SelectCourse.vue'], resolve)
       },
       {
         path: '/createLesson',
+        name: 'createLesson',
         component: resolve => require(['../views/CreateLesson.vue'], resolve)
       },
       {
         path: '/selectLesson',
+        name: 'selectLesson',
         component: resolve => require(['../views/SelectLesson.vue'], resolve)
       },
       {
         path: '/message',
+        name: 'message',
         component: resolve => require(['../views/Message.vue'], resolve)
       },
       {
         path: '/contact',
+        name: 'message',
         component: resolve => require(['../views/Contact.vue'], resolve)
       },
       {
@@ -54,9 +59,13 @@ const routes = [
     component: () => import( '../views/Login.vue')
   },
   {
-    path:'/registered',
-    name:'registered',
+    path: '/registered',
+    name: 'registered',
     component: () => import( '../views/Register.vue')
+  },
+  {
+    path: '/',
+    redirect: '/page'
   }
 
 ]

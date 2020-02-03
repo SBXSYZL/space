@@ -113,24 +113,32 @@
     },
     methods: {
       activeBtn (index, path) {
+        sessionStorage.setItem('defaultActive', index)
         this.defaultActive = index
         this.defaultActivePath = path
-        sessionStorage.setItem('defaultActive', index)
-        this.$router.replace(path).catch(err => {
-
-        })
+        this.$router.replace(path)
       }
     },
-    // created () {
-    //   console.log(sessionStorage.getItem('defaultActive'))
-    //
-    //   if (window.performance.navigation.type === 1) {
-    //     this.defaultActive = sessionStorage.getItem('defaultActive')
-    //     console.log(this.defaultActive)
-    //   } else {
-    //     console.log('首次进入')
-    //   }
-    // }
+    beforeMount () {
+      // console.log(this.$route.name)
+      // for (const item in this.titles) {
+      //   for (const i in this.titles[item].menu) {
+      //     if (this.titles[item].menu[i].path === '/' + this.$route.name) {
+      //       this.defaultActive = this.titles[item].menu[i].menuId;
+      //       break;
+      //     }
+      //   }
+      // }
+      // console.log(sessionStorage.getItem('defaultActive'))
+      //
+      // if (window.performance.navigation.type === 1) {
+      //   this.defaultActive = sessionStorage.getItem('defaultActive')
+      //   console.log(this.defaultActive)
+      // } else {
+      //   console.log('首次进入')
+      // }
+      // console.log('default ' + this.defaultActive)
+    }
   }
 </script>
 
