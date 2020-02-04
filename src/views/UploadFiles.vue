@@ -40,7 +40,7 @@
               :on-remove="handleRemove"
               action="https://jsonplaceholder.typicode.com/posts/"
               list-type="picture-card">
-              <i class="el-icon-plus"></i>
+              <i class="el-icon-plus"/>
             </el-upload>
             <el-dialog :visible.sync="dialogVisible" size="tiny">
               <img :src="dialogImageUrl" alt="" width="100%">
@@ -50,19 +50,7 @@
 
           <!--上传课件 start-->
           <el-form-item label="课件">
-            <el-upload
-
-              :before-remove="beforeRemove"
-              :file-list="fileList"
-              :limit="3"
-              :on-exceed="handleExceed"
-              :on-remove="handleRemove2"
-              action="https://jsonplaceholder.typicode.com/posts/"
-              class="upload-demo"
-              multiple>
-              <el-button size="small" type="primary">点击上传</el-button>
-              <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-            </el-upload>
+            <input type="file" ref="file" style="width: 200px;height: 80px"/>
           </el-form-item>
           <!--上传课件 end-->
 
@@ -84,47 +72,73 @@
 <script>
   export default {
     name: 'CreateCourse',
-    data() {
+    data () {
       return {
         courseName: '',
         courseDescription: '',
         dialogImageUrl: '',
         dialogVisible: false,
-        fileList: [{
-          name: '',
-          url: ''
-        }]
-      };
+        submitUrl: '',
+        fileList: ''
+      }
     },
 
     methods: {
-      onSubmit() {
-        console.log('submit!');
+      onSubmit () {
+        this.submitUrl = '/api/teacher/uploadFile'
+        let file = this.$refs.file.files[0]
+        if (!file) {
+          console.log('文件未选取')
+          return
+        }
+        let dataFile = new FormData()
+        dataFile.append('file', file)
+        dataFile.append('dir', '')
+        let config = {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        }
+        const instance = this.$axios.create({ withCredentials: true })
+
+        instance.post(this.submitUrl, dataFile, config).then(res => {
+          console.log(res)
+          if (res.data.status == 'success' && res.data.data == 'success') {
+            this.$message({
+              message: '上传成功',
+              type: 'success'
+            })
+          }else {
+            this.$message.error(res.data.data.errMsg)
+          }
+          console.log(res)
+        }).catch(err => {
+          this.$message.error(err.data.data.errMsg)
+          return false
+        })
       },
-      handleChange(value) {
-        console.log(value);
+      handleChange (value) {
+        console.log(value)
       },
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
+      handleRemove (file, fileList) {
+        console.log(file, fileList)
       },
-      handlePictureCardPreview(file) {
-        this.dialogImageUrl = file.url;
-        this.dialogVisible = true;
+      handlePictureCardPreview (file) {
+        this.dialogImageUrl = file.url
+        this.dialogVisible = true
       },
-      handleRemove2(file, fileList) {
-        console.log(file, fileList);
+      handleRemove2 (file, fileList) {
+        console.log(file, fileList)
       },
-      handlePreview(file) {
-        console.log(file);
+      handlePreview (file) {
+        console.log(file)
       },
-      handleExceed(files, fileList) {
-        this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+      handleExceed (files, fileList) {
+        this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
       },
-      beforeRemove(file, fileList) {
-        return this.$confirm(`确定移除 ${file.name}？`);
+      beforeRemove (file, fileList) {
+        return this.$confirm(`确定移除 ${file.name}？`)
       }
     }
-  };
+  }
 </script>
 
 <style scoped>
