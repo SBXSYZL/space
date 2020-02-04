@@ -11,7 +11,7 @@
       <div class="side">
         <SideBar/>
       </div>
-      <!--sidebar start-->
+      <!--sidebar end-->
       <!--main body start-->
       <div class="main">
         <transition name="move"
@@ -31,10 +31,8 @@
 
 <script>
   // @ is an alias to /src
-
   import SideBar from '../components/SideBar'
   import Header from '../components/Header'
-
   export default {
     name: 'home',
     components: { Header, SideBar },
@@ -43,6 +41,9 @@
     },
     methods: {},
     created () {
+      if (!sessionStorage.getItem('user')) {
+        this.$router.replace('/login')
+      }
     }
   }
 </script>
@@ -51,13 +52,11 @@
     min-width: 750px;
     background: #f3f3f3;
   }
-
   .header {
     min-height: 10%;
     text-align: center;
     background: #ffffff;
   }
-
   .body {
     height: 90%;
     display: flex;
@@ -65,19 +64,15 @@
     padding-right: 2%;
     padding-top: 20px;
   }
-
   .side {
     width: 10%;
     min-width: 120px;
     height: 100%;
   }
-
   .main {
     margin-left: 20px;
     width: 90%;
     height: 95%;
     background: #ffffff;
   }
-
-
 </style>
