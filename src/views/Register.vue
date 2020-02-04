@@ -28,7 +28,7 @@
 
       <el-form-item  prop="username" >
 
-         <el-input type="text" v-model="myForm.username" auto-complete="off" placeholder="请输入用户名" />
+         <el-input type="text" v-model="myForm.username" auto-complete="off" placeholder="请输入账号" />
       </el-form-item>
 
       <el-form-item prop="firstPassword">
@@ -93,7 +93,7 @@ export default {
         tel:""
       },
       myRule: {
-        username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+        username: [{ required: true, message: "请输入账号", trigger: "blur" }],
         firstPassword: [{ required: true, message: "请输入密码", trigger: "blur" }],
         secondPassword: [{ validator: validatePass, trigger: 'blur'}],
         select:   [{ required: true, message: "请选择用户类型", trigger: "blur" }],

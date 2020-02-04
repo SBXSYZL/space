@@ -27,7 +27,7 @@
       </el-form-item>
 
       <el-form-item prop="username">
-        <el-input auto-complete="off" placeholder="请输入用户名" type="text" v-model="myForm.username"/>
+        <el-input auto-complete="off" placeholder="请输入账号" type="text" v-model="myForm.username"/>
       </el-form-item>
       <el-form-item prop="password">
         <el-input
