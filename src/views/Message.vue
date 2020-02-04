@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div :style="getScrenHeight">
     <!--头部部分 start-->
-    <div style="margin-top: 2%;height: 10%">
+    <div style="padding-top: 2%;height:10%">
       <h4 class="talk_title">讨论</h4>
       <div class="divide_1"/>
       <div style="height: 5%">
@@ -16,9 +16,9 @@
         <!--左边面包屑 start-->
         <div style="display: flex;width: 30%;padding-left: 5%">
           <!--已读 start-->
-          <div id="tab_1" :class="{active:selectIndex===1}" @click="changeTab(1)">
+          <div id="tab_1" :class="{active:selectIndex==1}" @click="changeTab(1)">
             <span style="font-size: 20px;" :key="1"><b>已读</b></span>
-            <div :class="{nav:selectIndex===1}"/>
+            <div :class="{nav:selectIndex==1}"/>
           </div>
           <!--已读 end-->
           <div style="margin-left:2px;margin-right: 2px">
@@ -26,9 +26,9 @@
             <div/>
           </div>
           <!--未读 start-->
-          <div id="tab_2" :class="{active:selectIndex===2}" @click="changeTab(2)">
+          <div id="tab_2" :class="{active:selectIndex==2}" @click="changeTab(2)">
             <span style="font-size: 20px;" :key="2"><b>未读</b></span>
-            <div :class="{nav:selectIndex===2}"/>
+            <div :class="{nav:selectIndex==2}"/>
           </div>
           <!--未读 end-->
         </div>
@@ -44,14 +44,15 @@
       <div class="divide_1"/>
       <!--分割线 end-->
       <!--表格区域 start-->
-      <div style="width: 80%;min-height: 500px;margin-right: 5%;margin-left: 5%;position:absolute">
+      <div class="table_area">
 
         <!--表格 start-->
-        <div style="height: 80%">
+        <div style="width: 100%">
           <el-table
+            :height=table_height
             :data="msgs"
             size="medium"
-            style="width: 100%">
+            style="min-width: 100%">
             <el-table-column
               label="序号"
               width="80">
@@ -73,7 +74,7 @@
             </el-table-column>
             <el-table-column
               label="内容"
-              style="min-width: 80%">
+              style="width: 80%">
               <template slot-scope="scope">
                 <span>
                  {{scope.row.content}}
@@ -94,7 +95,7 @@
         </div>
         <!--表格 end-->
         <!--分页 start-->
-        <div class="block" style="height: 20%;position: absolute;bottom: 0">
+        <div class="block" style="text-align: right">
           <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
@@ -121,11 +122,28 @@
         pageSize: 10,
         pageNo: 1,
         total: 0,
-        selectIndex: 1
+        selectIndex: 1,
+        screen: {
+          height: ''
+        },
+        table_height: '0px'
 
       }
     },
     methods: {
+      getScrenHeight () {
+        this.screen.height = window.innerHeight - 100 + 'px'
+      },
+      getTableHeight () {
+        const a = (window.innerHeight - 100) * 2 / 3
+        if (a > 500) {
+          this.table_height = a + 'px'
+        } else {
+          this.table_height = '420px'
+        }
+
+        console.log(this.table_height)
+      },
       handleEdit (index, row) {
         console.log(index, row)
       },
@@ -133,7 +151,8 @@
         console.log(index, row)
       },
       handleSizeChange (val) {
-        console.log(`每页 ${val} 条`)
+        this.pageSize = val
+        this.getMsg()
       },
       handleCurrentChange (val) {
         console.log(`当前页: ${val}`)
@@ -141,9 +160,9 @@
       getMsg () {
         let url_1 = '/api/teacher/getHaveReadMessageList'
         let url_2 = '/api/teacher/getUnreadMessageList'
-        let url = null;
-        this.msgs=[]
-        if (this.selectIndex === 1) {
+        let url = null
+        this.msgs = []
+        if (this.selectIndex == 1) {
           url = url_1
         } else {
           url = url_2
@@ -158,6 +177,7 @@
           if (res.data.status === 'success') {
             this.msgs = res.data.data.list
             this.total = res.data.data.pageRows
+            this.getTableHeight()
           } else {
             this.$message.error(res.data.data.errMsg)
           }
@@ -167,15 +187,29 @@
         })
       },
       changeTab (key) {
-        this.selectIndex = key;
-        this.getMsg();
+        if (sessionStorage.getItem('selectIndex')) {
+          if (sessionStorage.getItem('selectIndex') != key) {
+            sessionStorage.setItem('selectIndex', key)
+            this.selectIndex = key
+          }
+        } else {
+          this.selectIndex = key
+          sessionStorage.setItem('selectIndex', key)
+        }
+        this.pageNo = 1
+
+        this.getMsg()
       }
 
     },
     activated () {
+      this.getScrenHeight()
       this.getMsg()
     },
     created () {
+      if (sessionStorage.getItem('selectIndex')) {
+        this.selectIndex = sessionStorage.getItem('selectIndex')
+      }
     }
   }
 </script>
@@ -220,6 +254,13 @@
     margin-top: 2px;
     background-color: #f55d54;
     transition: all .2s ease-out;
+  }
+
+  .table_area {
+    min-height: 470px;
+    width: 93%;
+    margin-right: 5%;
+    margin-left: 5%;
   }
 
   #tab_1, #tab_2:hover {
