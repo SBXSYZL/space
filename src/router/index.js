@@ -34,6 +34,10 @@ const routes = [
         path: '/contact',
         component: resolve => require(['../views/Contact.vue'], resolve)
       },
+      // {
+      //   path: '/uploadFiles',
+      //   component: resolve => require(['../views/UploadFiles.vue'], resolve)
+      // },
       {
         path: '/',
         redirect: '/createCourse'
@@ -57,6 +61,11 @@ const routes = [
     path:'/Register',
     name:'Register',
     component: () => import( '../views/Register.vue')
+  },
+  {
+    path:'/uploadFiles',
+    name:'Register',
+    component: () => import( '../views/UploadFiles.vue')
   }
 
 ]

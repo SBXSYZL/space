@@ -103,7 +103,7 @@
               {
                 menuId: 7,
                 name: '上传课件',
-                path: ''
+                path: '/UploadFiles'
               }
             ]
           }

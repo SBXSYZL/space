@@ -113,6 +113,12 @@
       }
     },
     methods: {
+      open () {
+        this.$message({
+          message: '注册成功',
+          type: 'success'
+        })
+      },
       handleSubmit () {
         const that = this
         let url
@@ -140,8 +146,8 @@
                 ) {
                   that.open()
                   that.logining = false
-                  sessionStorage.setItem('user', that.myForm.username)
-                  that.$router.push({ path: '/About' })
+                  // sessionStorage.setItem('user', that.myForm.username)
+                  that.$router.push({ path: '/login' })
                 } else if (response.data.status === 'fail') {
                   that.$alert(response.data.data.errMsg, '温馨提示', {
                     confirmButtonText: '确定'
