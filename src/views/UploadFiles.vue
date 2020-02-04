@@ -36,6 +36,7 @@
           <!--封面图 start-->
           <el-form-item label="封面图">
             <el-upload
+              :auto-upload="false"
               :on-preview="handlePictureCardPreview"
               :on-remove="handleRemove"
               action="https://jsonplaceholder.typicode.com/posts/"
@@ -51,17 +52,16 @@
           <!--上传课件 start-->
           <el-form-item label="课件">
             <el-upload
-
-              :before-remove="beforeRemove"
-              :file-list="fileList"
-              :limit="3"
-              :on-exceed="handleExceed"
-              :on-remove="handleRemove2"
-              action="https://jsonplaceholder.typicode.com/posts/"
+              list-type=""
               class="upload-demo"
-              multiple>
-              <el-button size="small" type="primary">点击上传</el-button>
-              <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+              ref="upload"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              :file-list="fileList"
+              :auto-upload="false">
+              <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
             </el-upload>
           </el-form-item>
           <!--上传课件 end-->
@@ -100,6 +100,7 @@
     methods: {
       onSubmit() {
         console.log('submit!');
+        this.$refs.upload.submit();
       },
       handleChange(value) {
         console.log(value);
@@ -111,17 +112,8 @@
         this.dialogImageUrl = file.url;
         this.dialogVisible = true;
       },
-      handleRemove2(file, fileList) {
-        console.log(file, fileList);
-      },
       handlePreview(file) {
         console.log(file);
-      },
-      handleExceed(files, fileList) {
-        this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
-      },
-      beforeRemove(file, fileList) {
-        return this.$confirm(`确定移除 ${file.name}？`);
       }
     }
   };
