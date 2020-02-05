@@ -11,18 +11,18 @@
     </div>
 
     <!--搜索框 start-->
-    <div style="display: flex;width: 50%; height: 5%;padding-left: 5%;padding-top: 1%;padding-bottom: 1%;" >
+    <div style="display: flex;width: 20%; height: 5%;padding-left: 5%;padding-top: 1%;padding-bottom: 1%;" >
       <h5>搜索</h5>
       <el-input
         placeholder="输入关键字搜索"
         size="50%"
         v-model="search"
-        suffix-icon="el-icon-search"
+        clearable
       />
-      <div style="font-size: 40px">
+<!--      <div style="font-size: 40px">-->
 <!--      <i class="el-icon-search"></i>-->
-<!--      <el-button type="danger" icon="el-icon-search" style="margin-left: 15px" >搜索</el-button>-->
-      </div>
+      <el-button type="danger" icon="el-icon-search" style="margin-left: 15px" >搜索</el-button>
+<!--      </div>-->
     </div>
     <!--搜索框 end-->
 
