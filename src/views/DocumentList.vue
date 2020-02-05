@@ -24,6 +24,7 @@
         <!--表格 start-->
         <el-table
           height="500"
+          v-loading="loading"
           :data="fileList"
           @row-click="rowClick"
           style="width: 100%"
@@ -34,7 +35,8 @@
             <template slot-scope="scope" style="width: 20%;display: flex">
               <div style="display: flex">
                 <img style="height: 30px;width: 30px" :src="scope.row.icon"/>
-                <p style="margin-left: 5px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap">{{scope.row.fileName}}</p>
+                <p style="margin-left: 5px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap">
+                  {{scope.row.fileName}}</p>
               </div>
             </template>
           </el-table-column>
@@ -96,6 +98,18 @@
       </div>
     </el-dialog>
     <!--创建文件夹弹窗 end-->
+    <!--删除弹窗 start-->
+    <el-dialog
+      title="提示"
+      :visible.sync="deleteDialog"
+      width="30%">
+      <span>确认删除？</span>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="deleteDialog = false">取 消</el-button>
+    <el-button type="primary" @click="deleteDialog = false">确 定</el-button>
+  </span>
+    </el-dialog>
+    <!--删除弹窗 end-->
   </div>
 </template>
 
@@ -119,13 +133,16 @@
         createFolderVisible: false,
         form: {
           newFolderName: ''
-        }
+        },
+        loading: true,
+        deleteDialog: false
       }
     },
     methods: {
       //获取当前目录下文件
       getFilesUnderFolder () {
         // console.log(this.breadCrumbs)
+        this.loading = true
         this.fileList = []
         let folderId = null
         if (this.breadCrumbs.length > 1) {
@@ -159,8 +176,10 @@
           } else {
             this.$message.error(res.data.data.errMsg)
           }
+          this.loading = false
         }).catch(err => {
           this.$message.error(err.data.data.errMsg)
+          this.loading = false
         })
       },
       //匹配文件类型
@@ -384,7 +403,7 @@
         this.getFilesUnderFolder(this.breadCrumbs[this.breadCrumbs.length - 1].fileId)
       },
       handleDelete (index, row) {
-        console.log(index, row)
+
         let path = this.makeBreadPath()
         let url = ''
         let params = null
@@ -414,17 +433,17 @@
           }).catch(err => {
           console.log(err)
         })
-
+        this.deleteDialog=false;
       },
       refresh () {
         this.getFilesUnderFolder()
       }
     },
     activated () {
-      if (sessionStorage.getItem('file_breads')) {
-        console.log(sessionStorage.getItem('file_breads'))
-        // this.breadCrumbs = sessionStorage.getItem('file_breads')
-      }
+      // if (sessionStorage.getItem('file_breads')) {
+      //   console.log(sessionStorage.getItem('file_breads'))
+      //   // this.breadCrumbs = sessionStorage.getItem('file_breads')
+      // }
       this.getFilesUnderFolder()
     },
 
