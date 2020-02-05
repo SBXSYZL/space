@@ -13,53 +13,57 @@
 
     <div style="margin-top: 3%;height: 90%;">
       <div style="width: 50%;min-height: 500px;margin-right: 5%;margin-left: 5%; position:absolute;">
-         <!--课程名称 start-->
-        <el-form  label-width="80px" ref="form" size="medium">
-        <el-form-item label="课程名称">
-          <el-input style="width: 250px" v-model="courseName" placeholder="请输入课程名" clearable></el-input>
-        </el-form-item>
-        <!--课程名称 end-->
-        <!--截止日期 start-->
-        <el-form-item label="截止日期">
-          <div class="block">
-            <el-date-picker
-              style="width: 250px"
-              v-model="deadline"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期">
-            </el-date-picker>
-          </div>
-        </el-form-item>
-        <!--截止日期 end-->
+        <!--课程名称 start-->
+        <el-form label-width="90px"
+                 ref="createCourseForm"
+                 size="medium"
+                 :model="createCourseForm"
+                 :rules="createCourseRule"
+
+        >
+          <el-form-item label="课程名称:" prop="courseName">
+            <el-input clearable placeholder="请输入课程名" style="width: 250px" v-model="createCourseForm.courseName"></el-input>
+          </el-form-item>
+          <!--课程名称 end-->
+          <!--截止日期 start-->
+          <el-form-item label="截至日期:" prop="deadline">
+            <div class="block">
+              <el-date-picker
+                placeholder="选择日期"
+                type="date"
+                v-model="createCourseForm.deadline">
+              </el-date-picker>
+            </div>
+          </el-form-item>
+          <!--截止日期 end-->
 
           <!--课时选择 start-->
-          <el-form-item label="课时数量">
-          <el-input-number v-model="num" controls-position="right" @change="handleChange" :min="1" :max="48" style="width:100px"></el-input-number>
+          <el-form-item label="课时数量:" prop="num">
+            <el-input-number :max="48" :min="1" @change="handleChange" controls-position="right" style="width:100px"
+                             v-model="createCourseForm.num"></el-input-number>
           </el-form-item>
           <!--课时选择 end-->
 
           <!--课程描述 start-->
-          <el-form-item label="课程描述">
+          <el-form-item label="课程描述:" prop="courseDescription">
             <el-input
-              style="width: 350px"
-              type="textarea"
-              resize="none"
               :autosize="{ minRows: 4, maxRows: 8}"
               placeholder="请输入内容"
-              v-model="courseDescription">
+              resize="none"
+              style="width: 350px"
+              type="textarea"
+              v-model="createCourseForm.courseDescription">
             </el-input>
           </el-form-item>
           <!--课程描述 end-->
           <!--按钮 start-->
           <el-form-item size="large">
-            <el-button @click="onSubmit" type="danger" style="width: 180px;margin-right: 5%">提交</el-button>
+            <el-button @click="onSubmit" style="width: 180px;margin-right: 5%" type="danger">提交</el-button>
             <el-button style="width: 180px">取消</el-button>
           </el-form-item>
           <!--按钮 end-->
-      </el-form>
-    </div>
+        </el-form>
+      </div>
 
     </div>
   </div>
@@ -70,18 +74,57 @@
     name: 'CreateCourse',
     data() {
       return {
-        courseName: '',
-        deadline: '',
-        courseDescription: '',
-        num: 1
-      };
+        createCourseForm: {
+          courseName: '',
+          deadline: '',
+          courseDescription: '',
+          num: 1
+        },
+        createCourseRule:{
+          courseName: [{ required: true, message: '请输入课程名称', trigger: 'blur' }],
+          deadline: [{ required: true, message: '请输入截至日期', trigger: 'blur' }],
+          num: [{ required: true, message: '请选择课时数量', trigger: 'blur' }],
+          courseDescription: [{ required: true, message: '请输入课程描述', trigger: 'blur' }]
+
+        }
+      }
     },
 
     methods: {
       onSubmit() {
-        console.log('submit!');
+        this.$refs.createCourseForm.validate(valid => {
+          if (valid) {
+            let url = '/api/teacher/createCourse'
+
+            this.$axios.get(url, {
+              params: {
+                courseDescription: this.createCourseForm.courseDescription,
+                courseName: this.createCourseForm.courseName,
+                deadline: this.createCourseForm.deadline,
+                schedule: this.createCourseForm.num,
+              }
+            }).then(res => {
+              console.log(res)
+              if (res.data.status === 'success'&&res.data.data === 'success') {
+               this.$message.success('创建课程成功')
+              } else {
+                this.$message.error(res.data.data.errMsg)
+                console.log(this.createCourseForm.deadline);
+              }
+
+            }).catch(err => {
+              this.$message.error(err.data.data.errMsg)
+            })
+
+          } else {
+            console.log('error submit!')
+            return false
+          }
+        })
+        // console.log('submit!');
+        //
       },
-      handleChange(value) {
+      handleChange(value){
         console.log(value);
       }
     }
