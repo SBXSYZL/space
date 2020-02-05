@@ -94,13 +94,14 @@
       onSubmit() {
         this.$refs.createCourseForm.validate(valid => {
           if (valid) {
-            let url = '/api/teacher/createCourse'
 
+            let url = '/api/teacher/createCourse'
+            const date = this.createCourseForm.deadline.toString();
             this.$axios.get(url, {
               params: {
                 courseDescription: this.createCourseForm.courseDescription,
                 courseName: this.createCourseForm.courseName,
-                deadline: this.createCourseForm.deadline,
+                deadline:  date,
                 schedule: this.createCourseForm.num,
               }
             }).then(res => {
