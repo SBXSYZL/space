@@ -2,10 +2,10 @@
   <div>
     <!--头部部分 start-->
     <div style="margin-top: 2%;height: 10%">
-      <h4 class="talk_title">课程</h4>
+      <h4 class="talk_title">教学课件</h4>
       <div class="divide_1"/>
       <div style="height: 5%">
-        <h5 class="msg_title">新建课程</h5>
+        <h5 class="msg_title">上传文件</h5>
       </div>
       <hr class="divide_2">
     </div>
@@ -36,6 +36,7 @@
           <!--封面图 start-->
           <el-form-item label="封面图">
             <el-upload
+              :auto-upload="false"
               :on-preview="handlePictureCardPreview"
               :on-remove="handleRemove"
               action="https://jsonplaceholder.typicode.com/posts/"
@@ -50,7 +51,7 @@
 
           <!--上传课件 start-->
           <el-form-item label="课件">
-            <input type="file" ref="file" style="width: 200px;height: 80px"/>
+            <input type="file" ref="file" style="width: 200px;height: 25px"/>
           </el-form-item>
           <!--上传课件 end-->
 
