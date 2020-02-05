@@ -34,7 +34,7 @@
             <template slot-scope="scope" style="width: 20%;display: flex">
               <div style="display: flex">
                 <img style="height: 30px;width: 30px" :src="scope.row.icon"/>
-                <p style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap">{{scope.row.fileName}}</p>
+                <p style="margin-left: 5px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap">{{scope.row.fileName}}</p>
               </div>
             </template>
           </el-table-column>
@@ -238,7 +238,7 @@
         }
 
         // 匹配 ppt
-        var pptlist = ['ppt']
+        var pptlist = ['ppt', 'pptx']
         result = pptlist.some(function (item) {
           return item == suffix
         })
@@ -385,6 +385,36 @@
       },
       handleDelete (index, row) {
         console.log(index, row)
+        let path = this.makeBreadPath()
+        let url = ''
+        let params = null
+
+        if (row.type == 'file') {
+          url = '/api/teacher/deleteFile'
+          params = {
+            dir: path,
+            fileId: row.fileId,
+            fileName: row.fileName
+          }
+        } else {
+          path = path + row.fileName
+          url = '/api/teacher/deleteDir'
+          if (path == null) {
+            path = ''
+          }
+          params = {
+            folderId: row.fileId,
+            path: path
+          }
+        }
+
+        this.$axios.get(url, { params: params })
+          .then(res => {
+            console.log(res)
+          }).catch(err => {
+          console.log(err)
+        })
+
       },
       refresh () {
         this.getFilesUnderFolder()
@@ -432,9 +462,9 @@
 
   .table_area {
     min-height: 470px;
-    width: 93%;
-    margin-right: 5%;
-    margin-left: 5%;
+    width: 80%;
+    margin-right: 8%;
+    margin-left: 8%;
   }
 
 </style>
