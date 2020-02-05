@@ -5,7 +5,7 @@
       <h4 class="talk_title">讨论</h4>
       <div class="divide_1"/>
       <div style="height: 5%">
-        <h5 class="msg_title">联系人</h5>
+        <h5 class="msg_title">发送消息</h5>
       </div>
       <hr class="divide_2">
     </div>

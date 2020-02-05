@@ -90,7 +90,7 @@
               },
               {
                 menuId: 6,
-                name: '联系人',
+                name: '发送消息',
                 path: '/contact'
               }
             ]
@@ -102,8 +102,13 @@
             menu: [
               {
                 menuId: 7,
-                name: '上传课件',
-                path: '/UploadFiles'
+                name: '上传文件',
+                path: '/uploadFiles'
+              },
+              {
+                menuId: 8,
+                name: '文件列表',
+                path: '/documentList'
               }
             ]
           }
