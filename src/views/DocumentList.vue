@@ -23,7 +23,8 @@
         </div>
         <!--表格 start-->
         <el-table
-          height="500"
+          :max-height="tableHeight"
+          v-loading="loading"
           :data="fileList"
           @row-click="rowClick"
           style="width: 100%"
@@ -34,7 +35,8 @@
             <template slot-scope="scope" style="width: 20%;display: flex">
               <div style="display: flex">
                 <img style="height: 30px;width: 30px" :src="scope.row.icon"/>
-                <p style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap">{{scope.row.fileName}}</p>
+                <p style="margin-left: 5px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap">
+                  {{scope.row.fileName}}</p>
               </div>
             </template>
           </el-table-column>
@@ -96,6 +98,18 @@
       </div>
     </el-dialog>
     <!--创建文件夹弹窗 end-->
+    <!--删除弹窗 start-->
+    <el-dialog
+      title="提示"
+      :visible.sync="deleteDialog"
+      width="30%">
+      <span>确认删除？</span>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="deleteDialog = false">取 消</el-button>
+    <el-button type="primary" @click="deleteDialog = false">确 定</el-button>
+  </span>
+    </el-dialog>
+    <!--删除弹窗 end-->
   </div>
 </template>
 
@@ -104,6 +118,7 @@
     name: 'DocumentList',
     data () {
       return {
+        tableHeight:'',
         fileList: [],
         breadCrumbs: [
           {
@@ -119,13 +134,16 @@
         createFolderVisible: false,
         form: {
           newFolderName: ''
-        }
+        },
+        loading: true,
+        deleteDialog: false,
       }
     },
     methods: {
       //获取当前目录下文件
       getFilesUnderFolder () {
         // console.log(this.breadCrumbs)
+        this.loading = true
         this.fileList = []
         let folderId = null
         if (this.breadCrumbs.length > 1) {
@@ -158,8 +176,10 @@
           } else {
             this.$message.error(res.data.data.errMsg)
           }
+          this.loading = false
         }).catch(err => {
           this.$message.error(err.data.data.errMsg)
+          this.loading = false
         })
       },
       //匹配文件类型
@@ -231,7 +251,7 @@
           return result
         }
         // 匹配 ppt
-        var pptlist = ['ppt']
+        var pptlist = ['ppt', 'pptx']
         result = pptlist.some(function (item) {
           return item == suffix
         })
@@ -294,6 +314,9 @@
               message: '上传成功',
               type: 'success'
             })
+            this.$refs.file.value =''
+            this.uploadOuter=false
+            this.getFilesUnderFolder()
           } else {
             this.$message.error(res.data.data.errMsg)
           }
@@ -302,6 +325,7 @@
           this.$message.error(err.data.data.errMsg)
           return false
         })
+
       },
       //创建文件夹
       createFolder () {
@@ -320,6 +344,7 @@
               message: '创建成功',
               type: 'success'
             })
+            this.form.newFolderName = ''
             this.createFolderVisible = false
             this.getFilesUnderFolder()
           } else {
@@ -374,19 +399,66 @@
         this.getFilesUnderFolder(this.breadCrumbs[this.breadCrumbs.length - 1].fileId)
       },
       handleDelete (index, row) {
-        console.log(index, row)
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let path = this.makeBreadPath()
+          let url = ''
+          let params = null
+          if (row.type == 'file') {
+            url = '/api/teacher/deleteFile'
+            params = {
+              dir: path,
+              fileId: row.fileId,
+              fileName: row.fileName
+            }
+          } else {
+            path = path + row.fileName
+            url = '/api/teacher/deleteDir'
+            if (path == null) {
+              path = ''
+            }
+            params = {
+              folderId: row.fileId,
+              path: path
+            }
+          }
+          this.$axios.get(url, { params: params })
+            .then(res => {
+              console.log(res)
+            }).catch(err => {
+            console.log(err)
+          })
+          this.getFilesUnderFolder()
+          this.deleteDialog=false;
+          //防止操作过快数据更新不及时,所以重复更新一次
+          this.getFilesUnderFolder()
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+
       },
       refresh () {
         this.getFilesUnderFolder()
       }
     },
     activated () {
-      if (sessionStorage.getItem('file_breads')) {
-        console.log(sessionStorage.getItem('file_breads'))
-        // this.breadCrumbs = sessionStorage.getItem('file_breads')
-      }
+      // if (sessionStorage.getItem('file_breads')) {
+      //   console.log(sessionStorage.getItem('file_breads'))
+      //   // this.breadCrumbs = sessionStorage.getItem('file_breads')
+      // }
       this.getFilesUnderFolder()
     },
+    mounted:function(){
+      this.tableHeight = window.innerHeight - (window.innerHeight*0.35);
+      //window.innerHeight:浏览器的可用高度
+
+    }
   }
 </script>
 
@@ -417,7 +489,7 @@
   }
   .table_area {
     min-height: 470px;
-    width: 93%;
+    width: 90%;
     margin-right: 5%;
     margin-left: 5%;
   }
