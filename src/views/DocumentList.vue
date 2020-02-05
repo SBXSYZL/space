@@ -325,7 +325,6 @@
           this.$message.error(err.data.data.errMsg)
           return false
         })
-
       },
       //创建文件夹
       createFolder () {
@@ -441,7 +440,6 @@
             message: '已取消删除'
           });
         });
-
       },
       refresh () {
         this.getFilesUnderFolder()
@@ -457,7 +455,6 @@
     mounted:function(){
       this.tableHeight = window.innerHeight - (window.innerHeight*0.35);
       //window.innerHeight:浏览器的可用高度
-
     }
   }
 </script>
