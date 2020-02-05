@@ -153,7 +153,6 @@
               } else {
                 this.fileList[i].icon = require('../assets/unknown.png')
               }
-
             }
             // console.log(this.fileList)
           } else {
@@ -176,7 +175,6 @@
           } else {
             return 'folder'
           }
-
         } catch (err) {
           suffix = ''
         }
@@ -196,7 +194,6 @@
           result = 'image'
           return result
         }
-
         // 匹配txt
         var txtlist = ['txt']
         result = txtlist.some(function (item) {
@@ -206,7 +203,6 @@
           result = 'txt'
           return result
         }
-
         // 匹配 excel
         var excelist = ['xls', 'xlsx']
         result = excelist.some(function (item) {
@@ -216,7 +212,6 @@
           result = 'excel'
           return result
         }
-
         // 匹配 word
         var wordlist = ['doc', 'docx']
         result = wordlist.some(function (item) {
@@ -226,7 +221,6 @@
           result = 'word'
           return result
         }
-
         // 匹配 pdf
         var pdflist = ['pdf']
         result = pdflist.some(function (item) {
@@ -236,7 +230,6 @@
           result = 'pdf'
           return result
         }
-
         // 匹配 ppt
         var pptlist = ['ppt']
         result = pptlist.some(function (item) {
@@ -246,7 +239,6 @@
           result = 'ppt'
           return result
         }
-
         // 匹配 视频
         var videolist = ['mp4', 'm2v', 'mkv']
         result = videolist.some(function (item) {
@@ -256,7 +248,6 @@
           result = 'video'
           return result
         }
-
         // 匹配 音频
         var radiolist = ['mp3', 'wav', 'wmv']
         result = radiolist.some(function (item) {
@@ -296,7 +287,6 @@
           headers: { 'Content-Type': 'multipart/form-data' }
         }
         const instance = this.$axios.create({ withCredentials: true })
-
         instance.post(this.submitUrl, dataFile, config).then(res => {
           // console.log(res)
           if (res.data.status == 'success' && res.data.data == 'success') {
@@ -397,7 +387,6 @@
       }
       this.getFilesUnderFolder()
     },
-
   }
 </script>
 
@@ -409,7 +398,6 @@
     text-align: left;
     font-size: 20px;
   }
-
   .divide_1 {
     margin-top: 10px;
     height: 5px;
@@ -417,24 +405,20 @@
     margin-right: 10px;
     background: #f3f3f3;
   }
-
   .msg_title {
     margin-top: 1%;
     margin-left: 5%;
     text-align: left;
     font-size: 15px;
   }
-
   .divide_2 {
     margin-top: 1%;
     color: #ffffff;
   }
-
   .table_area {
     min-height: 470px;
     width: 93%;
     margin-right: 5%;
     margin-left: 5%;
   }
-
 </style>
