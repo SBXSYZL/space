@@ -23,12 +23,12 @@
         </div>
         <!--表格 start-->
         <el-table
-          :max-height="tableHeight"
-          v-loading="loading"
           :data="fileList"
+          :max-height="tableHeight"
           @row-click="rowClick"
-          style="width: 100%"
-          size="medium">
+          size="medium"
+
+          v-loading="loading">
           <el-table-column
             label="文件名"
             width="420">
@@ -118,7 +118,7 @@
     name: 'DocumentList',
     data () {
       return {
-        tableHeight:'',
+        tableHeight:window.innerHeight - (window.innerHeight*0.35),
         fileList: [],
         breadCrumbs: [
           {
@@ -450,10 +450,8 @@
       //   console.log(sessionStorage.getItem('file_breads'))
       //   // this.breadCrumbs = sessionStorage.getItem('file_breads')
       // }
-      this.getFilesUnderFolder()
-    },
-    mounted:function(){
-      this.tableHeight = window.innerHeight - (window.innerHeight*0.35);
+      this.getFilesUnderFolder();
+      // this.tableHeight = window.innerHeight - (window.innerHeight*0.35);
       //window.innerHeight:浏览器的可用高度
     }
   }

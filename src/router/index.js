@@ -16,7 +16,7 @@ const routes = [
       },
       {
         path: '/selectCourse',
-        component: resolve => require(['../views/SelectCourse.vue'], resolve)
+        component: resolve => require(['../views/test.vue'], resolve)
       },
       {
         path: '/createLesson',
@@ -67,9 +67,9 @@ const routes = [
     component: () => import( '../views/Register.vue')
   },
   // {
-  //   path:'/documentlist',
-  //   name:'documentlist',
-  //   component: () => import( '../views/DocumentList.vue')
+  //   path:'/test',
+  //   name:'test',
+  //   component: () => import( '../views/test.vue')
   // }
 
 ]
