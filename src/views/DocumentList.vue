@@ -403,11 +403,9 @@
         this.getFilesUnderFolder(this.breadCrumbs[this.breadCrumbs.length - 1].fileId)
       },
       handleDelete (index, row) {
-
         let path = this.makeBreadPath()
         let url = ''
         let params = null
-
         if (row.type == 'file') {
           url = '/api/teacher/deleteFile'
           params = {
@@ -433,7 +431,7 @@
           }).catch(err => {
           console.log(err)
         })
-        this.deleteDialog=false;
+        this.deleteDialog = false
       },
       refresh () {
         this.getFilesUnderFolder()
