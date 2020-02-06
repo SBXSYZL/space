@@ -16,7 +16,7 @@ const routes = [
       },
       {
         path: '/selectCourse',
-        component: resolve => require(['../views/SelectCourse.vue'], resolve)
+        component: resolve => require(['../views/test.vue'], resolve)
       },
       {
         path: '/createLesson',

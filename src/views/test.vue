@@ -85,7 +85,7 @@
               label="课程进度"
               style="width: 80%">
               <template slot-scope="scope">
-                <el-progress  :stroke-width="7" :percentage="scope.row.progress"></el-progress>
+                <el-progress  :stroke-width="7" :percentage=scope.row.progress></el-progress>
               </template>
             </el-table-column>
 
@@ -128,6 +128,7 @@
     name: 'Message',
     data () {
       return {
+        search:'',
         msgs: [],
         pageSize: 10,
         pageNo: 1,
