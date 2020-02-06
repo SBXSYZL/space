@@ -118,7 +118,7 @@
     name: 'DocumentList',
     data () {
       return {
-        tableHeight:'',
+        tableHeight: '',
         fileList: [],
         breadCrumbs: [
           {
@@ -314,8 +314,8 @@
               message: '上传成功',
               type: 'success'
             })
-            this.$refs.file.value =''
-            this.uploadOuter=false
+            this.$refs.file.value = ''
+            this.uploadOuter = false
             this.getFilesUnderFolder()
           } else {
             this.$message.error(res.data.data.errMsg)
@@ -431,15 +431,15 @@
             console.log(err)
           })
           this.getFilesUnderFolder()
-          this.deleteDialog=false;
+          this.deleteDialog = false
           //防止操作过快数据更新不及时,所以重复更新一次
           this.getFilesUnderFolder()
         }).catch(() => {
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });
-        });
+          })
+        })
       },
       refresh () {
         this.getFilesUnderFolder()
@@ -452,8 +452,8 @@
       // }
       this.getFilesUnderFolder()
     },
-    mounted:function(){
-      this.tableHeight = window.innerHeight - (window.innerHeight*0.35);
+    mounted: function () {
+      this.tableHeight = window.innerHeight - (window.innerHeight * 0.35)
       //window.innerHeight:浏览器的可用高度
     }
   }
@@ -467,6 +467,7 @@
     text-align: left;
     font-size: 20px;
   }
+
   .divide_1 {
     margin-top: 10px;
     height: 5px;
@@ -474,16 +475,19 @@
     margin-right: 10px;
     background: #f3f3f3;
   }
+
   .msg_title {
     margin-top: 1%;
     margin-left: 5%;
     text-align: left;
     font-size: 15px;
   }
+
   .divide_2 {
     margin-top: 1%;
     color: #ffffff;
   }
+
   .table_area {
     min-height: 470px;
     width: 80%;
