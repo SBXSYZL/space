@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div :style="getScrenHeight">
     <!--头部部分 start-->
-    <div style="margin-top: 2%;height: 10%">
+    <div style="padding-top: 2%;height:10%">
       <h4 class="talk_title">课时作业</h4>
       <div class="divide_1"/>
       <div style="height: 5%">
@@ -11,118 +11,248 @@
     </div>
 
     <!--搜索框 start-->
-    <div style="display: flex;width: 20%; height: 5%;padding-left: 5%;padding-top: 1%;padding-bottom: 1%;" >
+    <div style="display: flex;width: 20%; height: 5%;padding-left: 5%;padding-top: 1%;padding-bottom: 1%;">
       <h5>搜索</h5>
       <el-input
+        clearable
         placeholder="输入关键字搜索"
         size="50%"
-        v-model="search"
-        clearable
+        v-model="selectContent"
       />
       <!--      <div style="font-size: 40px">-->
       <!--      <i class="el-icon-search"></i>-->
-      <el-button type="danger" icon="el-icon-search" style="margin-left: 15px" >搜索</el-button>
+      <el-button @click="select()" icon="el-icon-search" style="margin-left: 15px" type="danger">搜索</el-button>
       <!--      </div>-->
     </div>
     <!--搜索框 end-->
-
+    <!--课程列表 start-->
     <div style="height: 5%">
       <h5 class="msg_title">课时列表</h5>
     </div>
-
-    <!--分割线 start-->
-    <div class="divide_1"/>
-    <!--分割线 end-->
-
+    <!--课程列表 end-->
     <!--头部部分 end-->
-    <div class="table_area">
-      <div style="margin-top: 2%;height: 90%">
+    <div style="margin-top: 2%;height: 90%">
+      <!--分割线 start-->
+      <div class="divide_1"/>
+      <!--分割线 end-->
+      <!--表格区域 start-->
+      <div class="table_area">
 
-
-        <el-table
-          :data="tableData.filter(data => !search || data.courseName.toLowerCase().includes(search.toLowerCase()))"
-          style="width: 100%;min-width: 100%;"
-          size="medium"
-        >
-
-          <!--序号 start-->
-          <el-table-column
-            label="序号"
-            type="index">
-          </el-table-column>
-          <!--序号 end-->
-
-          <!--课程名称 start-->
-          <el-table-column
-            label="课时名称"
-            prop="courseName">
-          </el-table-column>
-          <!--课程名称 end-->
-
-          <!--截至时间 start-->
-          <el-table-column
-            label="提交日期"
-            prop="deadline">
-          </el-table-column>
-          <!--截至时间 end-->
-
-          <!--课程描述 start-->
-          <el-table-column
-            label="作业描述"
-            prop="courseDescription">
-          </el-table-column>
-          <!--课程描述 end-->
-
-          <!--课程进度 start-->
-          <el-table-column
-            label="提交进度"
+        <!--表格 start-->
+        <div style="width: 100%">
+          <el-table
+            :data="msgs"
+            :height=table_height
+            size="medium"
+            style="width: 100%;min-width: 100%;"
           >
-            <el-progress  :stroke-width="7" :percentage="percentage"></el-progress>
-          </el-table-column>
-          <!--课程进度 end-->
-          <el-table-column
-            align="right">
-            <template slot-scope="scope">
-              <el-button
-                @click="handleDelete(scope.$index, scope.row)"
-                size="small"
-                type="danger"
-                round>进入课程
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+            <!--序号 start-->
+            <el-table-column
+              label="序号"
+              type="index">
+            </el-table-column>
+            <!--序号 end-->
+
+            <el-table-column
+              label="课时名称"
+              min-width="150">
+              <template slot-scope="scope">
+                <span>
+                  {{scope.row.courseName}}
+                </span>
+              </template>
+            </el-table-column>
+
+            <el-table-column
+              label="提交时间"
+              min-width="200">
+              <template slot-scope="scope">
+                <span>
+                 {{scope.row.courseDeadline}}
+                </span>
+              </template>
+            </el-table-column>
+
+            <el-table-column
+              label="作业描述"
+              min-width="150"
+            >
+              <template slot-scope="scope">
+                <span>
+                 {{scope.row.courseDesc}}
+                </span>
+              </template>
+            </el-table-column>
+
+            <el-table-column
+              label="提交情况"
+              min-width="150">
+              <template slot-scope="scope">
+                <el-progress :percentage=scope.row.progress :stroke-width="7"></el-progress>
+              </template>
+            </el-table-column>
+
+            <el-table-column
+              style="text-align: right;">
+              <template slot-scope="scope" style="text-align: right">
+                <el-button
+                  @click="enterCourse(scope.row.courseId, scope.row.progress,scope.row.courseName)"
+                  round
+                  size="small"
+                  type="danger">进入课程
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <!--表格 end-->
+        <!--分页 start-->
+        <div class="block" style="text-align: right">
+          <el-pagination
+            :current-page="pageNo"
+            :page-size="pageSize"
+            :page-sizes="[10, 20, 30]"
+            :total="total"
+            @current-change="handleCurrentChange"
+            @size-change="handleSizeChange"
+            layout="total, sizes, prev, pager, next, jumper">
+          </el-pagination>
+        </div>
+        <!--分页 start-->
       </div>
+      <!--表格区域 end-->
     </div>
   </div>
 </template>
 
 <script>
   export default {
+    name: 'Message',
     data() {
       return {
-        tableData: [{
-          courseName: '空间构成-1',
-          deadline: '2020年7月14日',
-          courseDescription: '空间构成-1的课程描述'
-        }, {
-          courseName: '空间构成-2',
-          deadline: '2020年7月14日',
-          courseDescription: '空间构成-2的课程描述'
-        }],
-        search: '',
-        percentage:'30'
+        selectContent: '',
+        msgs: [],
+        pageSize: 10,
+        pageNo: 1,
+        total: 0,
+        selectIndex: 1,
+        screen: {
+          height: ''
+        },
+        table_height: '0px'
+
       }
     },
     methods: {
-      handleEdit(index, row) {
-        console.log(index, row);
+      select() {
+        let url = '/api/teacher/searchCourse';
+        this.msgs = [];
+        this.$axios.get(url, {
+          params: {
+            pageNo: this.pageNo,
+            pageSize: this.pageSize,
+            searchKey: this.selectContent
+          }
+        }).then(res => {
+          console.log(res);
+          if (res.data.status === 'success') {
+            this.msgs = res.data.data.list;
+            this.total = res.data.data.pageRows;
+            this.getTableHeight()
+          } else {
+            this.$message.error(res.data.data.errMsg)
+          }
+
+        }).catch(err => {
+          this.$message.error(err.data.data.errMsg)
+        })
+
       },
-      handleDelete(index, row) {
-        console.log(index, row);
+      getScrenHeight() {
+        this.screen.height = window.innerHeight
       },
+      getTableHeight() {
+        const a = (window.innerHeight - 180) * 2 / 3;
+        if (a > 500) {
+          this.table_height = a - 15 + 'px'
+        } else {
+          this.table_height = '420px'
+        }
+        console.log(this.table_height)
+      },
+      enterCourse(courseId, progress, courseName) {
+        console.log(courseId);
+        console.log(progress);
+        console.log(courseName);
+        this.$router.push(
+          {
+            path: '/electiveList',
+            query: {
+              courseId: courseId,
+              progress: progress,
+              courseName: courseName
+            }
+
+          });
+      },
+      handleSizeChange(val) {
+        this.pageSize = val;
+        this.getMsg()
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`)
+      },
+      getMsg() {
+
+        let url = '/api/teacher/getLessonList';
+        this.msgs = [];
+
+        this.$axios.get(url, {
+          params: {
+            pageNo: this.pageNo,
+            pageSize: this.pageSize,
+            courseId:8
+          }
+        }).then(res => {
+          console.log(res);
+          if (res.data.status === 'success') {
+            this.msgs = res.data.data.list;
+            this.total = res.data.data.pageRows;
+
+            this.getTableHeight()
+          } else {
+            this.$message.error(res.data.data.errMsg)
+          }
+
+        }).catch(err => {
+          this.$message.error(err.data.data.errMsg)
+        })
+      },
+      changeTab(key) {
+        if (sessionStorage.getItem('selectIndex')) {
+          if (sessionStorage.getItem('selectIndex') != key) {
+            sessionStorage.setItem('selectIndex', key);
+            this.selectIndex = key
+          }
+        } else {
+          this.selectIndex = key;
+          sessionStorage.setItem('selectIndex', key)
+        }
+        this.pageNo = 1;
+
+        this.getMsg()
+      }
 
     },
+    activated() {
+      this.getScrenHeight();
+      this.getMsg()
+    },
+    created() {
+      if (sessionStorage.getItem('selectIndex')) {
+        this.selectIndex = sessionStorage.getItem('selectIndex')
+      }
+    }
   }
 </script>
 
@@ -152,13 +282,30 @@
 
   .divide_2 {
     margin-top: 1%;
-    color: #ffffff;
+    color: #f3f3f3;
   }
+
+  .active {
+    color: #f55d54;
+  }
+
+  .nav {
+    bottom: 0;
+    display: block;
+    height: 2px;
+    margin-top: 2px;
+    background-color: #f55d54;
+    transition: all .2s ease-out;
+  }
+
   .table_area {
     min-height: 470px;
-    width: 93%;
+    width: 90%;
     margin-right: 5%;
     margin-left: 5%;
   }
 
+  #tab_1, #tab_2:hover {
+    cursor: pointer;
+  }
 </style>

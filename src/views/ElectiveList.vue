@@ -2,29 +2,20 @@
   <div :style="getScrenHeight">
     <!--头部部分 start-->
     <div style="padding-top: 2%;height:10%">
-      <h4 class="talk_title">课程</h4>
+      <div style="margin-left: 5%">
+      <el-button type="info" size="medium" @click="returnSelectCourse">返回</el-button>
+      </div>
       <div class="divide_1"/>
-      <div style="height: 5%">
-        <h5 class="msg_title">选择课程</h5>
+      <div style="height: 10%">
+        <div style="text-align: center;  display:flex;">
+          <span style="height:40px;line-height:40px;"><b class="msg_title" style="margin-left: 80px; font-size: 25px">{{courseData.courseName}}</b></span>
+          <span style="height:40px;line-height:40px;"><b class="msg_title" style="margin-left: 40px;font-size: 15px">课程进度</b></span>
+          <el-progress :percentage=courseData.progress :stroke-width="10" style="width: 10%;height:40px;line-height:40px; margin-left: 40px" ></el-progress>
+        </div>
       </div>
       <hr class="divide_2">
     </div>
 
-    <!--搜索框 start-->
-    <div style="display: flex;width: 20%; height: 5%;padding-left: 5%;padding-top: 1%;padding-bottom: 1%;">
-      <h5>搜索</h5>
-      <el-input
-        clearable
-        placeholder="输入关键字搜索"
-        size="50%"
-        v-model="selectContent"
-      />
-      <!--      <div style="font-size: 40px">-->
-      <!--      <i class="el-icon-search"></i>-->
-      <el-button @click="select()" icon="el-icon-search" style="margin-left: 15px" type="danger">搜索</el-button>
-      <!--      </div>-->
-    </div>
-    <!--搜索框 end-->
     <!--课程列表 start-->
     <div style="height: 5%">
       <h5 class="msg_title">课程列表</h5>
@@ -41,10 +32,10 @@
         <!--表格 start-->
         <div style="width: 100%">
           <el-table
-            :data="msgs"
             :height=table_height
-            size="medium"
+            :data="msgs"
             style="width: 100%;min-width: 100%;"
+            size="medium"
           >
             <!--序号 start-->
             <el-table-column
@@ -54,7 +45,7 @@
             <!--序号 end-->
 
             <el-table-column
-              label="课程名称"
+              label="姓名"
               min-width="150">
               <template slot-scope="scope">
                 <span>
@@ -64,7 +55,15 @@
             </el-table-column>
 
             <el-table-column
-              label="截至时间"
+              label="个人进度"
+              min-width="150">
+              <template slot-scope="scope">
+                <el-progress  :stroke-width="7" :percentage=scope.row.progress></el-progress>
+              </template>
+            </el-table-column>
+
+            <el-table-column
+              label="作业"
               min-width="200">
               <template slot-scope="scope">
                 <span>
@@ -74,7 +73,7 @@
             </el-table-column>
 
             <el-table-column
-              label="课程描述"
+              label="课堂表现"
               min-width="150"
             >
               <template slot-scope="scope">
@@ -85,21 +84,35 @@
             </el-table-column>
 
             <el-table-column
-              label="课程进度"
-              min-width="150">
+              label="测试分"
+              min-width="150"
+            >
               <template slot-scope="scope">
-                <el-progress :percentage=scope.row.progress :stroke-width="7"></el-progress>
+                <span>
+                 {{scope.row.courseDesc}}
+                </span>
+              </template>
+            </el-table-column>
+
+            <el-table-column
+              label="总分"
+              min-width="150"
+            >
+              <template slot-scope="scope">
+                <span>
+                 {{scope.row.courseDesc}}
+                </span>
               </template>
             </el-table-column>
 
             <el-table-column
               style="text-align: right;">
-              <template slot-scope="scope" style="text-align: right">
+              <template style="text-align: right" slot-scope="scope">
                 <el-button
-                  @click="enterCourse(scope.row.courseId, scope.row.progress,scope.row.courseName)"
-                  round
                   size="small"
-                  type="danger">进入课程
+                  type="danger"
+                  round
+                  @click="enterCourse(scope.row.courseId, scope.row.progress)">进入课程
                 </el-button>
               </template>
             </el-table-column>
@@ -109,13 +122,13 @@
         <!--分页 start-->
         <div class="block" style="text-align: right">
           <el-pagination
-            :current-page="pageNo"
-            :page-size="pageSize"
-            :page-sizes="[10, 20, 30]"
-            :total="total"
-            @current-change="handleCurrentChange"
             @size-change="handleSizeChange"
-            layout="total, sizes, prev, pager, next, jumper">
+            @current-change="handleCurrentChange"
+            :current-page="pageNo"
+            :page-sizes="[10, 20, 30]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total">
           </el-pagination>
         </div>
         <!--分页 start-->
@@ -127,10 +140,10 @@
 
 <script>
   export default {
-    name: 'Message',
-    data() {
+    name: 'ElectiveList',
+    data () {
       return {
-        selectContent: '',
+        selectContent:'',
         msgs: [],
         pageSize: 10,
         pageNo: 1,
@@ -139,87 +152,63 @@
         screen: {
           height: ''
         },
-        table_height: '0px'
-
+        table_height: '0px',
+        courseData:[]
       }
     },
     methods: {
-      select() {
-        let url = '/api/teacher/searchCourse';
-        this.msgs = [];
-        this.$axios.get(url, {
-          params: {
-            pageNo: this.pageNo,
-            pageSize: this.pageSize,
-            searchKey: this.selectContent
-          }
-        }).then(res => {
-          console.log(res);
-          if (res.data.status === 'success') {
-            this.msgs = res.data.data.list;
-            this.total = res.data.data.pageRows;
-            this.getTableHeight()
-          } else {
-            this.$message.error(res.data.data.errMsg)
-          }
-
-        }).catch(err => {
-          this.$message.error(err.data.data.errMsg)
-        })
-
+      returnSelectCourse(){
+        console.log("返回搜索课程页面")
+        this.$router.push({ path: '/selectCourse' });
       },
-      getScrenHeight() {
+      getParams () {
+        this.courseData = this.$route.query ;
+        console.log(this.courseData)
+      },
+      getScrenHeight () {
         this.screen.height = window.innerHeight
       },
-      getTableHeight() {
-        const a = (window.innerHeight - 180) * 2 / 3;
+      getTableHeight () {
+        const a = (window.innerHeight - 180) * 2 / 3
         if (a > 500) {
-          this.table_height = a - 15 + 'px'
+          this.table_height = a-15 + 'px'
         } else {
           this.table_height = '420px'
         }
         console.log(this.table_height)
       },
-      enterCourse(courseId, progress, courseName) {
+      enterCourse (courseId,progress) {
         console.log(courseId);
-        console.log(progress);
-        console.log(courseName);
-        this.$router.push(
-          {
-            path: '/electiveList',
-            query: {
-              courseId: courseId,
-              progress: progress,
-              courseName: courseName
-            }
 
-          });
+        this.$router.push({ path: '/electiveList' });
       },
-      handleSizeChange(val) {
-        this.pageSize = val;
+      handleSizeChange (val) {
+        this.pageSize = val
         this.getMsg()
       },
-      handleCurrentChange(val) {
+      handleCurrentChange (val) {
         console.log(`当前页: ${val}`)
       },
-      getMsg() {
+      getMsg () {
 
-        let url = '/api/teacher/getCourseList';
-        this.msgs = [];
+        let url = '/api/teacher/getElectiveList'
+        this.msgs = []
 
         this.$axios.get(url, {
           params: {
             pageNo: this.pageNo,
-            pageSize: this.pageSize
+            pageSize: this.pageSize,
+            courseId:this.courseData.courseId
           }
         }).then(res => {
-          console.log(res);
+          console.log(res)
           if (res.data.status === 'success') {
-            this.msgs = res.data.data.list;
-            this.total = res.data.data.pageRows;
+            this.msgs = res.data.data.list
+            this.total = res.data.data.pageRows
 
             this.getTableHeight()
           } else {
+            console.log(this.courseData.courseId)
             this.$message.error(res.data.data.errMsg)
           }
 
@@ -227,27 +216,28 @@
           this.$message.error(err.data.data.errMsg)
         })
       },
-      changeTab(key) {
+      changeTab (key) {
         if (sessionStorage.getItem('selectIndex')) {
           if (sessionStorage.getItem('selectIndex') != key) {
-            sessionStorage.setItem('selectIndex', key);
+            sessionStorage.setItem('selectIndex', key)
             this.selectIndex = key
           }
         } else {
-          this.selectIndex = key;
+          this.selectIndex = key
           sessionStorage.setItem('selectIndex', key)
         }
-        this.pageNo = 1;
+        this.pageNo = 1
 
         this.getMsg()
       }
 
     },
-    activated() {
-      this.getScrenHeight();
+    activated () {
+      this.getParams()
+      this.getScrenHeight()
       this.getMsg()
     },
-    created() {
+    created () {
       if (sessionStorage.getItem('selectIndex')) {
         this.selectIndex = sessionStorage.getItem('selectIndex')
       }
@@ -303,8 +293,9 @@
     margin-right: 5%;
     margin-left: 5%;
   }
-
+  .el-progress{width:100%;}
   #tab_1, #tab_2:hover {
     cursor: pointer;
   }
+  .el-progress{width:100%;}
 </style>

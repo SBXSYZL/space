@@ -16,7 +16,10 @@ const routes = [
       },
       {
         path: '/selectCourse',
-        component: resolve => require(['../views/test.vue'], resolve)
+        component: resolve => require(['../views/SelectCourse.vue'], resolve),
+        children:[
+
+        ]
       },
       {
         path: '/createLesson',
@@ -43,6 +46,10 @@ const routes = [
         component: resolve => require(['../views/DocumentList.vue'], resolve)
       },
       {
+        path: '/electiveList',
+        component: resolve => require(['../views/ElectiveList.vue'], resolve)
+      },
+      {
         path: '/',
         redirect: '/createCourse'
       }
@@ -66,11 +73,11 @@ const routes = [
     name:'Register',
     component: () => import( '../views/Register.vue')
   },
-  // {
-  //   path:'/test',
-  //   name:'test',
-  //   component: () => import( '../views/test.vue')
-  // }
+  {
+    path:'/test',
+    name:'test',
+    component: () => import( '../views/test.vue')
+  }
 
 ]
 
