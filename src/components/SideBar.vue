@@ -100,11 +100,11 @@
             icon: require('../assets/movie.png'),
             title: '教学课件',
             menu: [
-              {
-                menuId: 7,
-                name: '上传文件',
-                path: '/uploadFiles'
-              },
+              // {
+              //   menuId: 7,
+              //   name: '上传文件',
+              //   path: '/uploadFiles'
+              // },
               {
                 menuId: 8,
                 name: '文件列表',

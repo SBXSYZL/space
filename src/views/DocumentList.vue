@@ -23,7 +23,7 @@
         </div>
         <!--表格 start-->
         <el-table
-          height="500"
+          :max-height="tableHeight"
           v-loading="loading"
           :data="fileList"
           @row-click="rowClick"
@@ -118,6 +118,7 @@
     name: 'DocumentList',
     data () {
       return {
+        tableHeight:'',
         fileList: [],
         breadCrumbs: [
           {
@@ -135,7 +136,7 @@
           newFolderName: ''
         },
         loading: true,
-        deleteDialog: false
+        deleteDialog: false,
       }
     },
     methods: {
@@ -170,7 +171,6 @@
               } else {
                 this.fileList[i].icon = require('../assets/unknown.png')
               }
-
             }
             // console.log(this.fileList)
           } else {
@@ -195,7 +195,6 @@
           } else {
             return 'folder'
           }
-
         } catch (err) {
           suffix = ''
         }
@@ -215,7 +214,6 @@
           result = 'image'
           return result
         }
-
         // 匹配txt
         var txtlist = ['txt']
         result = txtlist.some(function (item) {
@@ -225,7 +223,6 @@
           result = 'txt'
           return result
         }
-
         // 匹配 excel
         var excelist = ['xls', 'xlsx']
         result = excelist.some(function (item) {
@@ -235,7 +232,6 @@
           result = 'excel'
           return result
         }
-
         // 匹配 word
         var wordlist = ['doc', 'docx']
         result = wordlist.some(function (item) {
@@ -245,7 +241,6 @@
           result = 'word'
           return result
         }
-
         // 匹配 pdf
         var pdflist = ['pdf']
         result = pdflist.some(function (item) {
@@ -255,7 +250,6 @@
           result = 'pdf'
           return result
         }
-
         // 匹配 ppt
         var pptlist = ['ppt', 'pptx']
         result = pptlist.some(function (item) {
@@ -265,7 +259,6 @@
           result = 'ppt'
           return result
         }
-
         // 匹配 视频
         var videolist = ['mp4', 'm2v', 'mkv']
         result = videolist.some(function (item) {
@@ -275,7 +268,6 @@
           result = 'video'
           return result
         }
-
         // 匹配 音频
         var radiolist = ['mp3', 'wav', 'wmv']
         result = radiolist.some(function (item) {
@@ -315,7 +307,6 @@
           headers: { 'Content-Type': 'multipart/form-data' }
         }
         const instance = this.$axios.create({ withCredentials: true })
-
         instance.post(this.submitUrl, dataFile, config).then(res => {
           // console.log(res)
           if (res.data.status == 'success' && res.data.data == 'success') {
@@ -323,6 +314,9 @@
               message: '上传成功',
               type: 'success'
             })
+            this.$refs.file.value =''
+            this.uploadOuter=false
+            this.getFilesUnderFolder()
           } else {
             this.$message.error(res.data.data.errMsg)
           }
@@ -349,6 +343,7 @@
               message: '创建成功',
               type: 'success'
             })
+            this.form.newFolderName = ''
             this.createFolderVisible = false
             this.getFilesUnderFolder()
           } else {
@@ -403,35 +398,48 @@
         this.getFilesUnderFolder(this.breadCrumbs[this.breadCrumbs.length - 1].fileId)
       },
       handleDelete (index, row) {
-        let path = this.makeBreadPath()
-        let url = ''
-        let params = null
-        if (row.type == 'file') {
-          url = '/api/teacher/deleteFile'
-          params = {
-            dir: path,
-            fileId: row.fileId,
-            fileName: row.fileName
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let path = this.makeBreadPath()
+          let url = ''
+          let params = null
+          if (row.type == 'file') {
+            url = '/api/teacher/deleteFile'
+            params = {
+              dir: path,
+              fileId: row.fileId,
+              fileName: row.fileName
+            }
+          } else {
+            path = path + row.fileName
+            url = '/api/teacher/deleteDir'
+            if (path == null) {
+              path = ''
+            }
+            params = {
+              folderId: row.fileId,
+              path: path
+            }
           }
-        } else {
-          path = path + row.fileName
-          url = '/api/teacher/deleteDir'
-          if (path == null) {
-            path = ''
-          }
-          params = {
-            folderId: row.fileId,
-            path: path
-          }
-        }
-
-        this.$axios.get(url, { params: params })
-          .then(res => {
-            console.log(res)
-          }).catch(err => {
-          console.log(err)
-        })
-        this.deleteDialog = false
+          this.$axios.get(url, { params: params })
+            .then(res => {
+              console.log(res)
+            }).catch(err => {
+            console.log(err)
+          })
+          this.getFilesUnderFolder()
+          this.deleteDialog=false;
+          //防止操作过快数据更新不及时,所以重复更新一次
+          this.getFilesUnderFolder()
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
       },
       refresh () {
         this.getFilesUnderFolder()
@@ -444,7 +452,10 @@
       // }
       this.getFilesUnderFolder()
     },
-
+    mounted:function(){
+      this.tableHeight = window.innerHeight - (window.innerHeight*0.35);
+      //window.innerHeight:浏览器的可用高度
+    }
   }
 </script>
 
@@ -456,7 +467,6 @@
     text-align: left;
     font-size: 20px;
   }
-
   .divide_1 {
     margin-top: 10px;
     height: 5px;
@@ -464,24 +474,20 @@
     margin-right: 10px;
     background: #f3f3f3;
   }
-
   .msg_title {
     margin-top: 1%;
     margin-left: 5%;
     text-align: left;
     font-size: 15px;
   }
-
   .divide_2 {
     margin-top: 1%;
     color: #ffffff;
   }
-
   .table_area {
     min-height: 470px;
     width: 80%;
-    margin-right: 8%;
-    margin-left: 8%;
+    margin-right: 5%;
+    margin-left: 5%;
   }
-
 </style>
