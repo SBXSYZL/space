@@ -128,9 +128,6 @@
                     confirmButtonText: '确定'
                   })
                 }
-              }).bind(this)
-              .catch(function (error) {
-                console.log(error)
               })
           } else {
             console.log('error submit!')
