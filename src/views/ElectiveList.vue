@@ -159,7 +159,8 @@
     methods: {
       returnSelectCourse(){
         console.log("返回搜索课程页面")
-        this.$router.push({ path: '/selectCourse' });
+        // this.$router.push({ path: '/selectCourse' });
+        this.$router.back()
       },
       getParams () {
         this.courseData = this.$route.query ;

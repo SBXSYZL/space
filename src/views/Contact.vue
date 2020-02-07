@@ -11,8 +11,6 @@
     </div>
     <!--头部部分 end-->
     <div style="margin-top: 2%;height: 90%">
-
-
     </div>
   </div>
 </template>
