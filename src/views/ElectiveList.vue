@@ -36,6 +36,7 @@
             :data="msgs"
             style="width: 100%;min-width: 100%;"
             size="medium"
+            v-loading="loading"
           >
             <!--序号 start-->
             <el-table-column
@@ -46,17 +47,17 @@
 
             <el-table-column
               label="姓名"
-              min-width="150">
+              min-width="100">
               <template slot-scope="scope">
                 <span>
-                  {{scope.row.courseName}}
+                  {{scope.row.nickName}}
                 </span>
               </template>
             </el-table-column>
 
             <el-table-column
               label="个人进度"
-              min-width="150">
+              min-width="100">
               <template slot-scope="scope">
                 <el-progress  :stroke-width="7" :percentage=scope.row.progress></el-progress>
               </template>
@@ -64,33 +65,33 @@
 
             <el-table-column
               label="作业"
-              min-width="200">
+              min-width="150">
               <template slot-scope="scope">
                 <span>
-                 {{scope.row.courseDeadline}}
+                 {{scope.row.workScore}}
                 </span>
               </template>
             </el-table-column>
 
             <el-table-column
               label="课堂表现"
-              min-width="150"
+              min-width="100"
             >
               <template slot-scope="scope">
-                <span>
-                 {{scope.row.courseDesc}}
-                </span>
+<!--                <span>-->
+<!--                 {{scope.row.performancescore}}-->
+<!--                </span>-->
               </template>
             </el-table-column>
 
             <el-table-column
               label="测试分"
-              min-width="150"
+              min-width="100"
             >
               <template slot-scope="scope">
-                <span>
-                 {{scope.row.courseDesc}}
-                </span>
+<!--                <span>-->
+<!--                 {{scope.row.workScore}}-->
+<!--                </span>-->
               </template>
             </el-table-column>
 
@@ -100,22 +101,24 @@
             >
               <template slot-scope="scope">
                 <span>
-                 {{scope.row.courseDesc}}
+                 {{scope.row.examScore}}
                 </span>
               </template>
             </el-table-column>
 
-            <el-table-column
-              style="text-align: right;">
-              <template style="text-align: right" slot-scope="scope">
-                <el-button
-                  size="small"
-                  type="danger"
-                  round
-                  @click="enterCourse(scope.row.courseId, scope.row.progress)">进入课程
-                </el-button>
+            <el-table-column>
+              <template slot-scope="scope">
+                <div style="text-align: right;margin-right: 1%">
+                  <el-button
+                    size="mini"
+                    type="danger"
+                    @click.stop="downloadFile(scope.row.fileName)">提交
+                  </el-button>
+                </div>
+
               </template>
             </el-table-column>
+
           </el-table>
         </div>
         <!--表格 end-->
@@ -153,13 +156,16 @@
           height: ''
         },
         table_height: '0px',
-        courseData:[]
+        courseData:[],
+        loading: true,
       }
     },
     methods: {
       returnSelectCourse(){
+        this.loading=false
         console.log("返回搜索课程页面")
         this.$router.push({ path: '/selectCourse' });
+
       },
       getParams () {
         this.courseData = this.$route.query ;
@@ -180,7 +186,7 @@
       enterCourse (courseId,progress) {
         console.log(courseId);
 
-        this.$router.push({ path: '/electiveList' });
+        this.$router.back();
       },
       handleSizeChange (val) {
         this.pageSize = val
@@ -190,7 +196,7 @@
         console.log(`当前页: ${val}`)
       },
       getMsg () {
-
+        this.loading=true
         let url = '/api/teacher/getElectiveList'
         this.msgs = []
 
@@ -211,26 +217,12 @@
             console.log(this.courseData.courseId)
             this.$message.error(res.data.data.errMsg)
           }
-
+          this.loading=false
         }).catch(err => {
           this.$message.error(err.data.data.errMsg)
+          this.loading=false
         })
-      },
-      changeTab (key) {
-        if (sessionStorage.getItem('selectIndex')) {
-          if (sessionStorage.getItem('selectIndex') != key) {
-            sessionStorage.setItem('selectIndex', key)
-            this.selectIndex = key
-          }
-        } else {
-          this.selectIndex = key
-          sessionStorage.setItem('selectIndex', key)
-        }
-        this.pageNo = 1
-
-        this.getMsg()
       }
-
     },
     activated () {
       this.getParams()

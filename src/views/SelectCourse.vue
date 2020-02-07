@@ -41,6 +41,7 @@
         <!--表格 start-->
         <div style="width: 100%">
           <el-table
+            v-loading="loading"
             :data="msgs"
             :height=table_height
             size="medium"
@@ -55,7 +56,7 @@
 
             <el-table-column
               label="课程名称"
-              min-width="150">
+              min-width="100">
               <template slot-scope="scope">
                 <span>
                   {{scope.row.courseName}}
@@ -65,7 +66,7 @@
 
             <el-table-column
               label="截至时间"
-              min-width="200">
+              min-width="150">
               <template slot-scope="scope">
                 <span>
                  {{scope.row.courseDeadline}}
@@ -75,7 +76,7 @@
 
             <el-table-column
               label="课程描述"
-              min-width="150"
+              min-width="100"
             >
               <template slot-scope="scope">
                 <span>
@@ -86,36 +87,42 @@
 
             <el-table-column
               label="课程进度"
-              min-width="150">
+              min-width="100">
               <template slot-scope="scope">
                 <el-progress :percentage=scope.row.progress :stroke-width="7"></el-progress>
               </template>
             </el-table-column>
 
-            <el-table-column
-              style="text-align: right;">
-              <template slot-scope="scope" style="text-align: right">
-                <el-button
-                  @click="enterCourse(scope.row.courseId, scope.row.progress,scope.row.courseName)"
-                  round
-                  size="small"
-                  type="danger">进入课程
-                </el-button>
+            <el-table-column>
+              <template slot-scope="scope">
+                <div style="text-align: right;margin-right: 1%">
+                  <el-button
+                    size="small"
+                    type="danger"
+                    @click.stop="enterCourse(scope.row.courseId, scope.row.progress,scope.row.courseName)">进入课程
+                  </el-button>
+                  <el-button
+                    size="small"
+                    @click.stop="handleDelete(scope.$index, scope.row)">删除
+                  </el-button>
+                </div>
+
               </template>
             </el-table-column>
+
           </el-table>
         </div>
         <!--表格 end-->
         <!--分页 start-->
         <div class="block" style="text-align: right">
           <el-pagination
-            :current-page="pageNo"
-            :page-size="pageSize"
-            :page-sizes="[10, 20, 30]"
-            :total="total"
-            @current-change="handleCurrentChange"
             @size-change="handleSizeChange"
-            layout="total, sizes, prev, pager, next, jumper">
+            @current-change="handleCurrentChange"
+            :current-page="pageNo"
+            :page-sizes="[10, 20, 30]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total">
           </el-pagination>
         </div>
         <!--分页 start-->
@@ -139,12 +146,43 @@
         screen: {
           height: ''
         },
-        table_height: '0px'
-
+        table_height: '0px',
+        loading:true
       }
     },
     methods: {
+      handleDelete (index, row) {
+        this.$confirm('此操作将永久删除该课程, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let url='/api/teacher/deleteCourse'
+          this.$axios.get(url,
+            { params: {
+              courseId:row.courseId
+              }
+            })
+            .then(res => {
+              console.log(res)
+            }).catch(err => {
+            console.log(err)
+          })
+          this.getMsg()
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.getMsg()
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      },
       select() {
+        this.loading=true
         let url = '/api/teacher/searchCourse';
         this.msgs = [];
         this.$axios.get(url, {
@@ -162,9 +200,10 @@
           } else {
             this.$message.error(res.data.data.errMsg)
           }
-
+          this.loading=false
         }).catch(err => {
           this.$message.error(err.data.data.errMsg)
+          this.loading=false
         })
 
       },
@@ -201,9 +240,11 @@
       },
       handleCurrentChange(val) {
         console.log(`当前页: ${val}`)
+        this.pageNo = val;
+        this.getMsg()
       },
       getMsg() {
-
+        this.loading=true
         let url = '/api/teacher/getCourseList';
         this.msgs = [];
 
@@ -222,9 +263,10 @@
           } else {
             this.$message.error(res.data.data.errMsg)
           }
-
+          this.loading=false
         }).catch(err => {
           this.$message.error(err.data.data.errMsg)
+          this.loading=false
         })
       },
       changeTab(key) {
