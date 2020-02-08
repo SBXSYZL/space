@@ -49,6 +49,7 @@
         <!--表格 start-->
         <div style="width: 100%">
           <el-table
+            v-loading="loading"
             :height=table_height
             :data="msgs"
             size="medium"
@@ -126,8 +127,8 @@
         screen: {
           height: ''
         },
-        table_height: '0px'
-
+        table_height: '0px',
+        loading : true
       }
     },
     methods: {
@@ -156,8 +157,11 @@
       },
       handleCurrentChange (val) {
         console.log(`当前页: ${val}`)
+        this.pageNo = val
+        this.getMsg()
       },
       getMsg () {
+        this.loading=true
         let url_1 = '/api/teacher/getHaveReadMessageList'
         let url_2 = '/api/teacher/getUnreadMessageList'
         let url = null
@@ -181,9 +185,10 @@
           } else {
             this.$message.error(res.data.data.errMsg)
           }
-
+          this.loading=false
         }).catch(err => {
           this.$message.error(err.data.data.errMsg)
+          this.loading=false
         })
       },
       changeTab (key) {

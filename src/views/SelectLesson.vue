@@ -139,12 +139,13 @@
         screen: {
           height: ''
         },
-        table_height: '0px'
-
+        table_height: '0px',
+        loading: false
       }
     },
     methods: {
       select() {
+        this.loading = true;
         let url = '/api/teacher/searchCourse';
         this.msgs = [];
         this.$axios.get(url, {
@@ -162,9 +163,10 @@
           } else {
             this.$message.error(res.data.data.errMsg)
           }
-
+          this.loading = false
         }).catch(err => {
-          this.$message.error(err.data.data.errMsg)
+          this.$message.error(err.data.data.errMsg);
+          this.loading = false
         })
 
       },
@@ -203,7 +205,7 @@
         console.log(`当前页: ${val}`)
       },
       getMsg() {
-
+        this.loading = true;
         let url = '/api/teacher/getLessonList';
         this.msgs = [];
 
@@ -211,7 +213,7 @@
           params: {
             pageNo: this.pageNo,
             pageSize: this.pageSize,
-            courseId:8
+            courseId: '6'
           }
         }).then(res => {
           console.log(res);
@@ -223,25 +225,12 @@
           } else {
             this.$message.error(res.data.data.errMsg)
           }
-
+          this.loading = false
         }).catch(err => {
-          this.$message.error(err.data.data.errMsg)
+          this.$message.error(err.data.data.errMsg);
+          this.loading = false
         })
       },
-      changeTab(key) {
-        if (sessionStorage.getItem('selectIndex')) {
-          if (sessionStorage.getItem('selectIndex') != key) {
-            sessionStorage.setItem('selectIndex', key);
-            this.selectIndex = key
-          }
-        } else {
-          this.selectIndex = key;
-          sessionStorage.setItem('selectIndex', key)
-        }
-        this.pageNo = 1;
-
-        this.getMsg()
-      }
 
     },
     activated() {
