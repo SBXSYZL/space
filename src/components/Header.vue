@@ -48,7 +48,7 @@
       }
     },
     created () {
-      this.userName=sessionStorage.getItem('user')
+      this.userName = sessionStorage.getItem('userName')
     }
   }
 </script>
@@ -61,11 +61,13 @@
     vertical-align: bottom;
     display: flex;
   }
+
   .center_div {
     margin-top: 1%;
     width: 60%;
     text-align: center;
   }
+
   .right_div {
     width: 30%;
     text-align: right;
