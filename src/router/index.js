@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Home from '../views/teacher/Home.vue'
 
 Vue.use(VueRouter)
 
@@ -12,42 +12,47 @@ const routes = [
     children: [
       {
         path: '/createCourse',
-        component: resolve => require(['../views/CreateCourse.vue'], resolve)
+        component: resolve => require(['../views/teacher/CreateCourse.vue'], resolve)
       },
       {
         path: '/selectCourse',
-        component: resolve => require(['../views/SelectCourse.vue'], resolve),
-        children:[
-
-        ]
+        component: resolve => require(['../views/teacher/SelectCourse.vue'], resolve)
       },
       {
         path: '/createLesson',
-        component: resolve => require(['../views/CreateLesson.vue'], resolve)
+        component: resolve => require(['../views/teacher/CreateLesson.vue'], resolve)
       },
       {
         path: '/selectLesson',
-        component: resolve => require(['../views/SelectLesson.vue'], resolve)
+        component: resolve => require(['../views/teacher/SelectLesson.vue'], resolve)
       },
       {
         path: '/message',
-        component: resolve => require(['../views/Message.vue'], resolve)
+        component: resolve => require(['../views/teacher/Message.vue'], resolve)
       },
       {
         path: '/contact',
-        component: resolve => require(['../views/Contact.vue'], resolve)
+        component: resolve => require(['../views/teacher/Contact.vue'], resolve)
       },
       {
         path: '/uploadFiles',
-        component: resolve => require(['../views/UploadFiles.vue'], resolve)
+        component: resolve => require(['../views/teacher/UploadFiles.vue'], resolve)
       },
       {
         path: '/documentList',
-        component: resolve => require(['../views/DocumentList.vue'], resolve)
+        component: resolve => require(['../views/teacher/DocumentList.vue'], resolve)
       },
       {
         path: '/electiveList',
-        component: resolve => require(['../views/ElectiveList.vue'], resolve)
+        component: resolve => require(['../views/teacher/ElectiveList.vue'], resolve)
+      },
+      {
+        path: '/submissionsList',
+        component: resolve => require(['../views/teacher/SubmissionsList.vue'], resolve)
+      },
+      {
+        path: '/isSend',
+        component: resolve => require(['../views/teacher/isSend.vue'], resolve)
       },
       {
         path: '/',
@@ -66,12 +71,12 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: () => import( '../views/Login.vue')
+    component: () => import( '../views/teacher/Login.vue')
   },
   {
     path:'/Register',
     name:'Register',
-    component: () => import( '../views/Register.vue')
+    component: () => import( '../views/teacher/Register.vue')
   },
   {
     path:'/test',
