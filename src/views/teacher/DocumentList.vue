@@ -166,10 +166,10 @@
                 } else {
                   this.fileList[i].type = 'file'
                 }
-                this.fileList[i].icon = require('../assets/' + type + '.png')
+                this.fileList[i].icon = require('../../assets/' + type + '.png')
                 //图标
               } else {
-                this.fileList[i].icon = require('../assets/unknown.png')
+                this.fileList[i].icon = require('../../assets/unknown.png')
               }
             }
             // console.log(this.fileList)

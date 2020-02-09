@@ -41,6 +41,7 @@
         <!--表格 start-->
         <div style="width: 100%">
           <el-table
+            v-loading="loading"
             :data="msgs"
             :height=table_height
             size="medium"
@@ -48,8 +49,13 @@
           >
             <!--序号 start-->
             <el-table-column
-              label="序号"
-              type="index">
+              label="课程名称"
+              min-width="150">
+              <template slot-scope="scope">
+                <span>
+                  {{scope.row.courseName}}
+                </span>
+              </template>
             </el-table-column>
             <!--序号 end-->
 
@@ -58,7 +64,7 @@
               min-width="150">
               <template slot-scope="scope">
                 <span>
-                  {{scope.row.courseName}}
+                  {{scope.row.workName}}
                 </span>
               </template>
             </el-table-column>
@@ -68,7 +74,7 @@
               min-width="200">
               <template slot-scope="scope">
                 <span>
-                 {{scope.row.courseDeadline}}
+                 {{scope.row.deadline}}
                 </span>
               </template>
             </el-table-column>
@@ -79,7 +85,7 @@
             >
               <template slot-scope="scope">
                 <span>
-                 {{scope.row.courseDesc}}
+                 {{scope.row.workDesc}}
                 </span>
               </template>
             </el-table-column>
@@ -88,7 +94,9 @@
               label="提交情况"
               min-width="150">
               <template slot-scope="scope">
-                <el-progress :percentage=scope.row.progress :stroke-width="7"></el-progress>
+
+                <el-progress :percentage=scope.row.progress :stroke-width="7" v-if="scope.row.progress!=null"></el-progress>
+                <el-progress :percentage=0 :stroke-width="7" v-if="scope.row.progress==null"></el-progress>
               </template>
             </el-table-column>
 
@@ -96,10 +104,9 @@
               style="text-align: right;">
               <template slot-scope="scope" style="text-align: right">
                 <el-button
-                  @click="enterCourse(scope.row.courseId, scope.row.progress,scope.row.courseName)"
-                  round
+                  @click="enterLesson(scope.row.workId, scope.row.progress,scope.row.workName)"
                   size="small"
-                  type="danger">进入课程
+                  type="danger">进入课时
                 </el-button>
               </template>
             </el-table-column>
@@ -140,13 +147,13 @@
           height: ''
         },
         table_height: '0px',
-        loading: false
+        loading:true
       }
     },
     methods: {
       select() {
         this.loading = true;
-        let url = '/api/teacher/searchCourse';
+        let url = '/api/teacher/searchWork';
         this.msgs = [];
         this.$axios.get(url, {
           params: {
@@ -182,17 +189,21 @@
         }
         console.log(this.table_height)
       },
-      enterCourse(courseId, progress, courseName) {
-        console.log(courseId);
+      enterLesson(workId, progress, workName) {
+        if(progress==null)
+        {
+          progress = 0
+        }
+        console.log(workId);
         console.log(progress);
-        console.log(courseName);
+        console.log(workName);
         this.$router.push(
           {
-            path: '/electiveList',
+            path: '/submissionsList',
             query: {
-              courseId: courseId,
+              workId: workId,
               progress: progress,
-              courseName: courseName
+              workName: workName
             }
 
           });
@@ -212,8 +223,7 @@
         this.$axios.get(url, {
           params: {
             pageNo: this.pageNo,
-            pageSize: this.pageSize,
-            courseId: '6'
+            pageSize: this.pageSize
           }
         }).then(res => {
           console.log(res);

@@ -31,8 +31,8 @@
 
 <script>
   // @ is an alias to /src
-  import SideBar from '../components/SideBar'
-  import Header from '../components/Header'
+  import SideBar from '../../components/SideBar'
+  import Header from '../../components/Header'
   export default {
     name: 'home',
     components: { Header, SideBar },

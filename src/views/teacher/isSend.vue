@@ -2,7 +2,9 @@
   <div :style="getScrenHeight">
     <!--头部部分 start-->
     <div style="padding-top: 2%;height:10%">
-      <h4 class="talk_title">讨论</h4>
+      <div style="margin-left: 5%">
+        <el-button @click="returnMessage" size="medium" type="info">返回</el-button>
+      </div>
       <div class="divide_1"/>
       <div style="height: 5%">
         <h5 class="msg_title">信息</h5>
@@ -17,27 +19,12 @@
         <div style="display: flex;width: 30%;padding-left: 5%">
           <!--已读 start-->
           <div id="tab_1" :class="{active:selectIndex==1}" @click="changeTab(1)">
-            <span style="font-size: 20px;" :key="1"><b>已读</b></span>
+            <span style="font-size: 20px;" :key="1"><b>已发送</b></span>
             <div :class="{nav:selectIndex==1}"/>
           </div>
           <!--已读 end-->
-          <div style="margin-left:2px;margin-right: 2px">
-            <span style="font-size: 26px"><b>/</b></span>
-            <div/>
-          </div>
-          <!--未读 start-->
-          <div id="tab_2" :class="{active:selectIndex==2}" @click="changeTab(2)">
-            <span style="font-size: 20px;" :key="2"><b>未读</b></span>
-            <div :class="{nav:selectIndex==2}"/>
-          </div>
-          <!--未读 end-->
         </div>
         <!--左边面包屑 end-->
-        <!--右边按钮 start-->
-        <div style="width: 70%;text-align: right;padding-right: 5%">
-          <el-button type="danger" round>已发送</el-button>
-        </div>
-        <!--右边按钮 end-->
       </div>
       <!--面包屑 end-->
       <!--分割线 start-->
@@ -86,10 +73,7 @@
               style="text-align: right;"
               width="80">
               <template style="text-align: right" slot-scope="scope">
-                <el-button
-                  size="mini"
-                  @click="handleEdit(scope.$index, scope.row)">回复
-                </el-button>
+
               </template>
             </el-table-column>
           </el-table>
@@ -132,6 +116,12 @@
       }
     },
     methods: {
+      returnMessage()
+      {
+        this.loading = false;
+        console.log("返回信息页面");
+        this.$router.back();
+      },
       getScrenHeight () {
         this.screen.height = window.innerHeight - 100 + 'px'
       },
@@ -162,15 +152,9 @@
       },
       getMsg () {
         this.loading=true
-        let url_1 = '/api/teacher/getHaveReadMessageList'
-        let url_2 = '/api/teacher/getUnreadMessageList'
-        let url = null
+
+        let url = '/api/teacher/getMySendMsg'
         this.msgs = []
-        if (this.selectIndex == 1) {
-          url = url_1
-        } else {
-          url = url_2
-        }
         this.$axios.get(url, {
           params: {
             pageNo: this.pageNo,
