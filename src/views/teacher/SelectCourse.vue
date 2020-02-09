@@ -235,6 +235,7 @@
           });
       },
       handleSizeChange(val) {
+        this.pageNo = 1;
         this.pageSize = val;
         this.getMsg()
       },

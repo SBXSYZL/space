@@ -48,7 +48,7 @@
       }
     },
     created () {
-      this.userName=sessionStorage.getItem('user')
+      this.userName=sessionStorage.getItem('userName')
     }
   }
 </script>

@@ -134,7 +134,7 @@
             }
             let param = new URLSearchParams()
             param.append('account', this.myForm.username)
-            param.append('nickName', this.myForm.tel)
+            param.append('nickName', this.myForm.username)
             param.append('password', this.myForm.secondPassword)
             param.append('tel', this.myForm.tel)
             this.$axios.post(url, param)

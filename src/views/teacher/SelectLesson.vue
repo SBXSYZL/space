@@ -209,10 +209,13 @@
           });
       },
       handleSizeChange(val) {
+        this.pageNo = 1;
         this.pageSize = val;
         this.getMsg()
       },
       handleCurrentChange(val) {
+        this.pageNo = val;
+        this.getMsg()
         console.log(`当前页: ${val}`)
       },
       getMsg() {
