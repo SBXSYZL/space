@@ -41,11 +41,11 @@
         <!--表格 start-->
         <div style="width: 100%">
           <el-table
-            v-loading="loading"
             :data="msgs"
             :height=table_height
             size="medium"
             style="width: 100%;min-width: 100%;"
+            v-loading="loading"
           >
             <!--序号 start-->
             <el-table-column
@@ -95,7 +95,8 @@
               min-width="150">
               <template slot-scope="scope">
 
-                <el-progress :percentage=scope.row.progress*100 :stroke-width="7" v-if="scope.row.progress!=null"></el-progress>
+                <el-progress :percentage=scope.row.progress*100 :stroke-width="7"
+                             v-if="scope.row.progress!=null"></el-progress>
                 <el-progress :percentage=0 :stroke-width="7" v-if="scope.row.progress==null"></el-progress>
               </template>
             </el-table-column>
@@ -147,35 +148,38 @@
           height: ''
         },
         table_height: '0px',
-        loading:true
+        loading: true
       }
     },
     methods: {
       select() {
-        this.loading = true;
-        let url = '/api/teacher/searchWork';
-        this.msgs = [];
-        this.$axios.get(url, {
-          params: {
-            pageNo: this.pageNo,
-            pageSize: this.pageSize,
-            searchKey: this.selectContent
-          }
-        }).then(res => {
-          console.log(res);
-          if (res.data.status === 'success') {
-            this.msgs = res.data.data.list;
-            this.total = res.data.data.pageRows;
-            this.getTableHeight()
-          } else {
-            this.$message.error(res.data.data.errMsg)
-          }
-          this.loading = false
-        }).catch(err => {
-          this.$message.error(err.data.data.errMsg);
-          this.loading = false
-        })
-
+        if (this.selectContent.split(" ").join("").length !== 0) {
+          this.loading = true;
+          let url = '/api/teacher/searchWork';
+          this.msgs = [];
+          this.$axios.get(url, {
+            params: {
+              pageNo: this.pageNo,
+              pageSize: this.pageSize,
+              searchKey: this.selectContent
+            }
+          }).then(res => {
+            console.log(res);
+            if (res.data.status === 'success') {
+              this.msgs = res.data.data.list;
+              this.total = res.data.data.pageRows;
+              this.getTableHeight()
+            } else {
+              this.$message.error(res.data.data.errMsg)
+            }
+            this.loading = false
+          }).catch(err => {
+            this.$message.error(err.data.data.errMsg);
+            this.loading = false
+          })
+        } else {
+          this.$message.error('请输入搜索内容')
+        }
       },
       getScrenHeight() {
         this.screen.height = window.innerHeight
@@ -190,8 +194,7 @@
         console.log(this.table_height)
       },
       enterLesson(workId, progress, workName) {
-        if(progress==null)
-        {
+        if (progress == null) {
           progress = 0
         }
         console.log(workId);
@@ -202,7 +205,7 @@
             path: '/submissionsList',
             query: {
               workId: workId,
-              progress: progress*100,
+              progress: progress * 100,
               workName: workName
             }
 
@@ -215,7 +218,7 @@
       },
       handleCurrentChange(val) {
         this.pageNo = val;
-        this.getMsg()
+        this.getMsg();
         console.log(`当前页: ${val}`)
       },
       getMsg() {

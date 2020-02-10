@@ -60,7 +60,7 @@
               label="个人进度"
               min-width="100">
               <template slot-scope="scope">
-                <el-progress :percentage=scope.row.progress :stroke-width="7"></el-progress>
+                <el-progress :percentage=scope.row.progress*100 :stroke-width="7"></el-progress>
               </template>
             </el-table-column>
 

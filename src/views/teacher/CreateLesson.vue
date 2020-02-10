@@ -32,10 +32,8 @@
                 </span>
               </el-option>
               <div style="text-align: center">
-                <el-button @click.stop="prevePage" class="text" v-show="selectPage!==1">上一页</el-button>
-                <el-button @click.stop="prevePage" class="text" disabled v-show="selectPage===1">上一页</el-button>
-                <el-button @click.stop="nextPage" class="text" v-show="selectPage!==pageCount">下一页</el-button>
-                <el-button @click.stop="nextPage" class="text" disabled v-show="selectPage===pageCount">下一页</el-button>
+                <el-button @click.stop="prevePage" class="text" :disabled="selectPage==1" >上一页</el-button>
+                <el-button @click.stop="nextPage" class="text" :disabled="selectPage==pageCount">下一页</el-button>
               </div>
             </el-select>
           </el-form-item>

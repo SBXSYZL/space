@@ -56,14 +56,10 @@
             v-loading="loading">
             <el-table-column
               label="序号"
-              width="80">
-              <template slot-scope="scope">
-                <i class="el-icon-time"/>
-                <span style="margin-left: 10px">
-                  {{ scope.row.msgId }}
-                </span>
-              </template>
+              width="80"
+              type="index">
             </el-table-column>
+
             <el-table-column
               label="姓名"
               width="180">
