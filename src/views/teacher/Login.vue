@@ -26,8 +26,8 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item prop="username">
-        <el-input auto-complete="off" placeholder="请输入用户名" type="text" v-model="myForm.username"/>
+      <el-form-item prop="account">
+        <el-input auto-complete="off" placeholder="请输入账号" type="text" v-model="myForm.account"/>
       </el-form-item>
       <el-form-item prop="password">
         <el-input
@@ -39,16 +39,17 @@
       </el-form-item>
       <el-form-item style="width:100%;">
         <el-button
-          :loading="logining"
           @click="handleSubmit"
           round
           style="width:100%;"
           type="danger"
         >登录
-
         </el-button>
       </el-form-item>
 
+      <el-form-item style="width:100%;">
+        <el-button type="text" @click="register" style="margin-left: auto">未有账号?前往注册</el-button>
+      </el-form-item>
     </el-form>
 
   </div>
@@ -60,12 +61,12 @@
       return {
         logining: false,
         myForm: {
-          username: '',
+          account: '',
           password: '',
           select: ''
         },
         myRule: {
-          username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
+          account: [{ required: true, message: '请输入账号', trigger: 'blur' }],
           password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
           select: [{ required: true, message: '请选择用户类型', trigger: 'blur' }]
         },
@@ -84,11 +85,11 @@
       }
     },
     methods: {
-      openFullScreen () {
-        this.fullscreenLoading = true
-        setTimeout(() => {
-          this.fullscreenLoading = false
-        }, 2000)
+      register(){
+        this.$router.push(
+          {
+            path: '/Register',
+          });
       },
       open () {
         this.$message({
@@ -111,17 +112,24 @@
               url = '/api/teacher/teacherLogin'
             }
             let param = new URLSearchParams()
-            param.append('account', this.myForm.username)
+            param.append('account', this.myForm.account)
             param.append('password', this.myForm.password)
             this.$axios.post(url, param)
               .then(function (response) {
                 console.log(response)
                 if (response.data.status === 'success' && response.data.data) {
-                  that.open()
+
                   that.logining = false
                   sessionStorage.setItem('userName', response.data.data)
-                  sessionStorage.setItem('user', that.myForm.username)
-                  that.$router.replace({ path: '/' })
+                  sessionStorage.setItem('user', that.myForm.account)
+                  if(that.myForm.select === '学生')
+                  {
+                    that.$message.error('学生端尚未上线,尽情期待')
+                  }
+                  else if(that.myForm.select === '教师') {
+                    that.$router.replace({path: '/'})
+                    that.open()
+                  }
                 } else {
                   that.logining = false
                   that.$alert('账号或密码错误', '温馨提示', {

@@ -26,9 +26,12 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item prop="username">
+      <el-form-item prop="account">
+        <el-input type="text" v-model="myForm.account"  placeholder="请填写登录的账号"/>
+      </el-form-item>
 
-        <el-input type="text" v-model="myForm.username" auto-complete="off" placeholder="请输入用户名"/>
+      <el-form-item prop="name">
+        <el-input type="text" v-model="myForm.name"  placeholder="请输入昵称"/>
       </el-form-item>
 
       <el-form-item prop="firstPassword">
@@ -68,6 +71,9 @@
         >注册
         </el-button>
       </el-form-item>
+      <el-form-item style="width:100%;">
+        <el-button type="text" @click="login" style="margin-left: auto">已有账号?前往登录</el-button>
+      </el-form-item>
     </el-form>
   </div>
 </template>
@@ -85,15 +91,19 @@
         }
       }
       return {
+        logining: false,
         myForm: {
-          username: '',
+          account:'',
+          name: '',
           firstPassword: '',
           secondPassword: '',
           select: '',
           tel: ''
         },
         myRule: {
-          username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+          account: [{ required: true, message: '请输入登录账号', trigger: 'blur' }],
+
+          name: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
           firstPassword: [{ required: true, message: '请输入密码', trigger: 'blur' }],
           secondPassword: [{ validator: validatePass, trigger: 'blur' }],
           select: [{ required: true, message: '请选择用户类型', trigger: 'blur' }],
@@ -113,6 +123,12 @@
       }
     },
     methods: {
+      login(){
+        this.$router.push(
+          {
+            path: '/login',
+          });
+      },
       open () {
         this.$message({
           message: '注册成功',
@@ -120,6 +136,7 @@
         })
       },
       handleSubmit () {
+        this.logining = true
         const that = this
         let url
         that.$refs.myForm.validate(valid => {
@@ -133,8 +150,8 @@
               url = '/api/teacher/teacherRegistered'
             }
             let param = new URLSearchParams()
-            param.append('account', this.myForm.username)
-            param.append('nickName', this.myForm.username)
+            param.append('account', this.myForm.account)
+            param.append('nickName', this.myForm.name)
             param.append('password', this.myForm.secondPassword)
             param.append('tel', this.myForm.tel)
             this.$axios.post(url, param)
@@ -148,14 +165,17 @@
                   that.logining = false
                   // sessionStorage.setItem('user', that.myForm.username)
                   that.$router.push({ path: '/login' })
+
                 } else if (response.data.status === 'fail') {
                   that.$alert(response.data.data.errMsg, '温馨提示', {
                     confirmButtonText: '确定'
                   })
                 }
+                that.logining = false
               }).bind(this)
               .catch(function (error) {
                 console.log(error)
+                that.logining = false
               })
           } else {
             console.log('error submit!')
