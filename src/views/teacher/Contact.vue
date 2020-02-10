@@ -14,19 +14,34 @@
       <div style="width: 50%;min-height: 500px;margin-right: 5%;margin-left: 5%; position:absolute;">
 
         <!--课时名称 start-->
-        <el-form  label-width="80px" ref="createLessonForm" size="medium" :rules="createLessonRule" :model="createLessonForm" >
+        <el-form label-width="80px" ref="contactForm" size="medium" :rules="contactRule" :model="contactForm" >
 
           <!--选择分页 start-->
           <el-form-item label="联系人:" prop="contactID">
-            <el-select v-model="createLessonForm.contactID" popper-class="selectJob" size="small"  >
-              <el-option v-for="(item,index) in restoreTable" :key="index" :label="item.courseName" :value="item.contactID">
-                <span style="float: left;width: 120px" :title="item.name">{{item.courseName}}</span>
+            <el-select
+              :loading="loading"
+              :remote-method="remoteMethod"
+              filterable
+              placeholder="请输入关键词"
+              remote
+              reserve-keyword
+              v-model="contactForm.contactID">
+              <el-option
+                :key="item.userId"
+                :label="item.nickName"
+                :value="item.userId"
+                v-for="item in options">
+                  <span
+                    :title="item.name"
+                    style="float: left;width: 120px">
+                    {{item.nickName}}
+                  </span>
               </el-option>
               <div style="text-align: center">
-                <el-button class="text" @click.stop="prevePage"  v-show="selectPage!==1"  >上一页</el-button>
-                <el-button class="text" @click.stop="prevePage"  v-show="selectPage===1"  disabled>上一页</el-button>
-                <el-button class="text" @click.stop="nextPage" v-show="selectPage!==pageCount">下一页</el-button>
-                <el-button class="text" @click.stop="nextPage" v-show="selectPage===pageCount" disabled>下一页</el-button>
+                <el-button @click.stop="prevePage" class="text" v-show="selectPage!==1">上一页</el-button>
+                <el-button @click.stop="prevePage" class="text" disabled v-show="selectPage===1">上一页</el-button>
+                <el-button @click.stop="nextPage" class="text" v-show="selectPage!==pageCount">下一页</el-button>
+                <el-button @click.stop="nextPage" class="text" disabled v-show="selectPage===pageCount">下一页</el-button>
               </div>
             </el-select>
           </el-form-item>
@@ -40,7 +55,7 @@
               resize="none"
               :autosize="{ minRows: 5, maxRows: 10}"
               placeholder="请回复内容"
-              v-model="createLessonForm.content">
+              v-model="contactForm.content">
             </el-input>
           </el-form-item>
           <!--作业描述 end-->
@@ -63,57 +78,64 @@
     name: 'CreateLesson',
     data() {
       return {
-        /*选择课程 start*/
-        total: null ,// 获取总数据量
+        options: [],
+        value: '',
+        list: [],
+        loading: false,
+        states: [],
+        total: null,// 获取总数据量
         pageCount: null, // 获取总页数
-        selectPage: 1, // 当前页数
-        restoreTable: [], //当前页数数据
-        /*选择课程 end*/
+        selectPage: 1, // 当前页数,
+        query:'',
 
-        createLessonForm:{
+        contactForm:{
           contactID:'',
           content: '',
         },
 
-        createLessonRule:{
-          contactID: [{ required: true, message: '请选择课程', trigger: 'blur' }],
-          content: [{ required: true, message: '请输入作业描述', trigger: 'blur' }],
+        contactRule:{
+          contactID: [{ required: true, message: '请选择联系人', trigger: 'blur' }],
+          content: [{ required: true, message: '请输入发送内容', trigger: 'blur' }],
         }
       };
     },
-    mounted() {
-      this.getTableList(); // 初始化
-    },
+
     methods: {
-      /*选择课程 start*/
-      getTableList(form = {}) {
-
-        let url = '/api/teacher/getCourseList';
+      remoteMethod(query) {
+        console.log(query);
+        let url = '/api/teacher/searchUser';
         this.msgs = [];
-
+        this.query=query
         this.$axios.get(url, {
           params: {
             pageNo: this.selectPage,
             pageSize: 5,
-
+            searchKey: query
           }
         }).then(res => {
           console.log(res);
-
-          if (res.data.status === 'success') {
-            this.restoreTable = res.data.data.list;
-            this.total = res.data.data.pageRows; // 数据总数量
-
-            this.pageCount = res.data.data.pageCount; // 因为我每次只请求20条， 所以算出总页数
-            this.selectCourseID = this.restoreTable[0].id; // 因为每次都选取第一条数据;
-          } else {
-            this.$message.error(res.data.data.errMsg)
-          }
-          this.loading=false
+          this.list = res.data.data.list;
+          this.total = res.data.data.pageRows; // 数据总数量
+          this.pageCount = res.data.data.pageCount; // 因为我每次只请求20条， 所以算出总页数
+          console.log(this.list);
         }).catch(err => {
-          this.$message.error(err.data.data.errMsg)
-          this.loading=false
-        })
+          this.$message.error(err.data.data.errMsg);
+          this.loading = false
+        });
+
+
+        if (query !== '') {
+          this.loading = true;
+          setTimeout(() => {
+            this.loading = false;
+            this.options = this.list.filter(item => {
+              return item.nickName.toLowerCase()
+                .indexOf(query.toLowerCase()) > -1;
+            });
+          }, 500);
+        } else {
+          this.options = [];
+        }
       },
       prevePage() {
         --this.selectPage;
@@ -132,32 +154,28 @@
       /*选择课程 end*/
 
       onSubmit() {
-
-        this.$refs.createLessonForm.validate(valid => {
+        const that = this
+          console.log(this.contactForm.contactID)
+        this.$refs.contactForm.validate(valid => {
           if (valid) {
-            let url = '/api/teacher/createWork'
-            const date = this.createLessonForm.submissionDate.toString();
-            this.$axios.get(url, {
-              params: {
-                courseId: this.createLessonForm.selectCourseID,
-                deadline: date,
-                workDesc:  this.createLessonForm.lessonDescription,
-                workName: this.createLessonForm.lessonName,
-              }
-            }).then(res => {
+            let url = '/api/teacher/writeMessageTo'
+
+            let param = new URLSearchParams()
+            param.append('toId', this.contactForm.contactID)
+            param.append('content', this.contactForm.content)
+            this.$axios.post(url, param)
+              .then(function (res) {
               console.log(res)
               if (res.data.status === 'success'&&res.data.data === 'success') {
-                console.log(this.createLessonForm.selectCourseID);
-                this.$message.success('创建课时成功')
+                console.log(that.contactForm.selectCourseID);
+                that.$message.success('发送消息成功')
+                that.contactForm.content='';
+                that.contactForm.contactID='';
               } else {
-                this.$message.error(res.data.data.errMsg)
+                that.$message.error(res.data.data.errMsg)
                 console.log(this.createCourseForm.deadline);
               }
-
-            }).catch(err => {
-              this.$message.error(err.data.data.errMsg)
             })
-
           } else {
             console.log('error submit!')
             return false

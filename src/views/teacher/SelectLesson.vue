@@ -95,7 +95,7 @@
               min-width="150">
               <template slot-scope="scope">
 
-                <el-progress :percentage=scope.row.progress :stroke-width="7" v-if="scope.row.progress!=null"></el-progress>
+                <el-progress :percentage=scope.row.progress*100 :stroke-width="7" v-if="scope.row.progress!=null"></el-progress>
                 <el-progress :percentage=0 :stroke-width="7" v-if="scope.row.progress==null"></el-progress>
               </template>
             </el-table-column>
@@ -202,17 +202,20 @@
             path: '/submissionsList',
             query: {
               workId: workId,
-              progress: progress,
+              progress: progress*100,
               workName: workName
             }
 
           });
       },
       handleSizeChange(val) {
+        this.pageNo = 1;
         this.pageSize = val;
         this.getMsg()
       },
       handleCurrentChange(val) {
+        this.pageNo = val;
+        this.getMsg()
         console.log(`当前页: ${val}`)
       },
       getMsg() {

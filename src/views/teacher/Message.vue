@@ -206,7 +206,8 @@
               if (response.data.status === 'success' && response.data.data) {
                 that.$message.success('回复成功');
                 that.dialogVisible = false;
-                that.replyForm.replyMessage=''
+                that.replyForm.replyMessage='';
+                that.getMsg();
               } else {
                 that.$message.error('请填写回复内容')
               }
@@ -246,6 +247,7 @@
         console.log(index, row)
       },
       handleSizeChange(val) {
+        this.pageNo = 1;
         this.pageSize = val;
         this.getMsg()
       },

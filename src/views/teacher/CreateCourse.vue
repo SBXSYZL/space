@@ -107,7 +107,18 @@
             }).then(res => {
               console.log(res)
               if (res.data.status === 'success'&&res.data.data === 'success') {
-               this.$message.success('创建课程成功')
+               this.$message.success('创建课程成功');
+                // sessionStorage.setItem('defaultActive', 2);
+                // this.$router.replace(
+                //   {
+                //     path: '/selectCourse',
+                //   });
+                this.$router.go(0)
+                this.createCourseForm.courseName='';
+                this.createCourseForm.deadline='';
+                this.createCourseForm.courseDescription= '';
+                this.createCourseForm.num= 1;
+               console.log(sessionStorage.getItem('defaultActive'))
               } else {
                 this.$message.error(res.data.data.errMsg)
                 console.log(this.createCourseForm.deadline);

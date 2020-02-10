@@ -233,11 +233,14 @@
 
       },
       handleSizeChange(val) {
+        this.pageNo = 1;
         this.pageSize = val;
         this.getMsg()
       },
       handleCurrentChange(val) {
+        this.pageNo = val;
         console.log(`当前页: ${val}`)
+        this.getMsg()
       },
       getMsg() {
         this.loading = true;
