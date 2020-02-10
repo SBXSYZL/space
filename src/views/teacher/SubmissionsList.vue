@@ -74,7 +74,7 @@
               label="是否提交"
               min-width="150">
               <template slot-scope="scope">
-                <el-radio-group v-model="scope.row.submitStatus">
+                <el-radio-group v-model="scope.row.submitStatus" >
                   <el-radio :label="1">提交</el-radio>
                   <el-radio :label="0">未提交</el-radio>
                 </el-radio-group>
@@ -182,28 +182,34 @@
         }
       },
       downloadWorkFile(content, submitId) {
-        // let a = document.createElement('a')
-        // a.href = '/api/teacher/downloadSubmitWork?content=' + content+'&submitId='+submitId
-        // a.click()
-        let url = '/api/teacher/downloadSubmitWork';
-        this.$axios.get(url, {
-          params: {
-            content: content,
-            submitId: submitId,
-          }
-        }).then(res => {
-          console.log(res);
-          if (res.data.status === 'success') {
 
-          } else {
-            console.log(this.courseData.courseId);
-            this.$message.error(res.data.data.errMsg)
-          }
-          this.loading = false
-        }).catch(err => {
-          this.$message.error('该学生尚未上传作业文件');
-          this.loading = false
-        })
+          let a = document.createElement('a')
+          a.href = '/api/teacher/downloadSubmitWork?content=' + content+'&submitId='+submitId
+          a.click()
+          // this.$message.error('该学生尚未上传作业文件');
+
+        // this.$router.back()
+        // this.$message.error('该学生尚未上传作业文件');
+
+        // let url = '/api/teacher/downloadSubmitWork';
+        // this.$axios.get(url, {
+        //   params: {
+        //     content: content,
+        //     submitId: submitId,
+        //   }
+        // }).then(res => {
+        //   console.log(res);
+        //   if (res.data.status === 'success') {
+        //
+        //   } else {
+        //     console.log(this.courseData.courseId);
+        //     this.$message.error(res.data.data.errMsg)
+        //   }
+        //   this.loading = false
+        // }).catch(err => {
+        //   this.$message.error('该学生尚未上传作业文件');
+        //   this.loading = false
+        // })
       },
       returnSelectCourse() {
         this.loading = false;

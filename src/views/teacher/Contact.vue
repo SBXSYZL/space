@@ -38,10 +38,8 @@
                   </span>
               </el-option>
               <div style="text-align: center">
-                <el-button @click.stop="prevePage" class="text" v-show="selectPage!==1">上一页</el-button>
-                <el-button @click.stop="prevePage" class="text" disabled v-show="selectPage===1">上一页</el-button>
-                <el-button @click.stop="nextPage" class="text" v-show="selectPage!==pageCount">下一页</el-button>
-                <el-button @click.stop="nextPage" class="text" disabled v-show="selectPage===pageCount">下一页</el-button>
+                <el-button @click.stop="prevePage" class="text" :disabled="selectPage==1" >上一页</el-button>
+                <el-button @click.stop="nextPage" class="text" :disabled="selectPage==pageCount">下一页</el-button>
               </div>
             </el-select>
           </el-form-item>
@@ -103,38 +101,38 @@
     methods: {
       remoteMethod(query) {
         console.log(query);
-        let url = '/api/teacher/searchUser';
-        this.msgs = [];
-        this.query=query
-        this.$axios.get(url, {
-          params: {
-            pageNo: this.selectPage,
-            pageSize: 5,
-            searchKey: query
+        if(query.split(" ").join("").length !== 0) {
+          let url = '/api/teacher/searchUser';
+          this.msgs = [];
+          this.query = query
+          this.$axios.get(url, {
+            params: {
+              pageNo: this.selectPage,
+              pageSize: 5,
+              searchKey: query
+            }
+          }).then(res => {
+            console.log(res);
+            this.list = res.data.data.list;
+            this.total = res.data.data.pageRows; // 数据总数量
+            this.pageCount = res.data.data.pageCount; // 因为我每次只请求20条， 所以算出总页数
+            console.log(this.list);
+          }).catch(err => {
+            this.$message.error(err.data.data.errMsg);
+            this.loading = false
+          });
+          if (query !== '') {
+            this.loading = true;
+            setTimeout(() => {
+              this.loading = false;
+              this.options = this.list.filter(item => {
+                return item.nickName.toLowerCase()
+                  .indexOf(query.toLowerCase()) > -1;
+              });
+            }, 500);
+          } else {
+            this.options = [];
           }
-        }).then(res => {
-          console.log(res);
-          this.list = res.data.data.list;
-          this.total = res.data.data.pageRows; // 数据总数量
-          this.pageCount = res.data.data.pageCount; // 因为我每次只请求20条， 所以算出总页数
-          console.log(this.list);
-        }).catch(err => {
-          this.$message.error(err.data.data.errMsg);
-          this.loading = false
-        });
-
-
-        if (query !== '') {
-          this.loading = true;
-          setTimeout(() => {
-            this.loading = false;
-            this.options = this.list.filter(item => {
-              return item.nickName.toLowerCase()
-                .indexOf(query.toLowerCase()) > -1;
-            });
-          }, 500);
-        } else {
-          this.options = [];
         }
       },
       prevePage() {

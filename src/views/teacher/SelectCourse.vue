@@ -182,30 +182,35 @@
         });
       },
       select() {
-        this.loading=true
-        let url = '/api/teacher/searchCourse';
-        this.msgs = [];
-        this.$axios.get(url, {
-          params: {
-            pageNo: this.pageNo,
-            pageSize: this.pageSize,
-            searchKey: this.selectContent
-          }
-        }).then(res => {
-          console.log(res);
-          if (res.data.status === 'success') {
-            this.msgs = res.data.data.list;
-            this.total = res.data.data.pageRows;
-            this.getTableHeight()
-          } else {
-            this.$message.error(res.data.data.errMsg)
-          }
-          this.loading=false
-        }).catch(err => {
-          this.$message.error(err.data.data.errMsg)
-          this.loading=false
-        })
-
+        if(this.selectContent.split(" ").join("").length != 0) {
+          this.loading = true
+          let url = '/api/teacher/searchCourse';
+          this.msgs = [];
+          this.$axios.get(url, {
+            params: {
+              pageNo: this.pageNo,
+              pageSize: this.pageSize,
+              searchKey: this.selectContent
+            }
+          }).then(res => {
+            console.log(res);
+            if (res.data.status === 'success') {
+              this.msgs = res.data.data.list;
+              this.total = res.data.data.pageRows;
+              this.getTableHeight()
+            } else {
+              this.$message.error(res.data.data.errMsg)
+            }
+            this.loading = false
+          }).catch(err => {
+            this.$message.error(err.data.data.errMsg)
+            this.loading = false
+          })
+        }
+        else
+        {
+          this.$message.error('请输入搜索内容')
+        }
       },
       getScrenHeight() {
         this.screen.height = window.innerHeight
