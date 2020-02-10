@@ -12,7 +12,7 @@
 
     <!--搜索框 start-->
     <div style="display: flex;width: 20%; height: 5%;padding-left: 5%;padding-top: 1%;padding-bottom: 1%;">
-      <h5>搜索</h5>
+
       <el-input
         clearable
         placeholder="输入关键字搜索"
