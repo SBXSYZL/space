@@ -36,6 +36,7 @@
         <!--表格 start-->
         <div style="width: 100%">
           <el-table
+            @row-click="rowClick"
             v-loading="loading"
             :height=table_height
             :data="msgs"
@@ -60,15 +61,17 @@
               style="width: 80%">
               <template slot-scope="scope">
                 <span>
-                 {{scope.row.content}}
+                 {{scope.row.content| ellipsis}}
                 </span>
               </template>
             </el-table-column>
             <el-table-column
-              style="text-align: right;"
-              width="80">
-              <template style="text-align: right" slot-scope="scope">
-
+              label="时间"
+              style="width: 50%">
+              <template slot-scope="scope">
+                <span>
+                 {{scope.row.postDate}}
+                </span>
               </template>
             </el-table-column>
           </el-table>
@@ -89,7 +92,35 @@
         <!--分页 start-->
       </div>
       <!--表格区域 end-->
-    </div>
+
+      <!--详情页弹窗 start-->
+      <el-dialog
+        :visible.sync="Detailsdialog"
+        title="消息详情"
+        width="30%">
+        <el-form :model="Details" label-width="15%" ref="form" size="mini">
+          <el-form-item label="发送人:" class="Details">
+          <span>
+            {{Details.authorName}}
+          </span>
+          </el-form-item>
+          <el-form-item label="信息:" class="Details">
+          <span>
+            {{Details.content}}
+          </span>
+          </el-form-item>
+          <el-form-item label="发送时间:" class="Details">
+          <span>
+            {{Details.postDate}}
+          </span>
+          </el-form-item>
+        </el-form>
+        <span class="dialog-footer" slot="footer">
+    <el-button @click.stop="Detailsdialog = false" type="primary">确 定</el-button>
+    </span>
+      </el-dialog>
+      <!--  详情页弹窗 end-->
+  </div>
   </div>
 </template>
 
@@ -107,10 +138,33 @@
           height: ''
         },
         table_height: '0px',
-        loading : true
+        loading : true,
+        Detailsdialog:false,
+        Details:{
+          authorName:'',
+          content:'',
+          postDate:''
+        }
+      }
+    },
+    filters: {
+      ellipsis(value) {
+        if (!value) return "";
+        if (value.length > 50) {
+          return value.slice(0, 50) + "...";
+        }
+        return value;
       }
     },
     methods: {
+      rowClick (val) {
+        console.log(val.authorName)
+        this.Detailsdialog = true
+        this.Details.authorName=val.authorName,
+          this.Details.content=val.content,
+          this.Details.postDate=val.postDate
+
+      },
       returnMessage()
       {
         this.loading = false;
