@@ -182,10 +182,14 @@
         }
       },
       downloadWorkFile(content, submitId) {
+          try {
+            let a = document.createElement('a')
+            a.href = '/api/teacher/downloadSubmitWork?content=' + content+'&submitId='+submitId
+            a.click()
+          }catch (e) {
+            this.$message.error('该学生尚未上传作业文件');
+          }
 
-          let a = document.createElement('a')
-          a.href = '/api/teacher/downloadSubmitWork?content=' + content+'&submitId='+submitId
-          a.click()
           // this.$message.error('该学生尚未上传作业文件');
 
         // this.$router.back()

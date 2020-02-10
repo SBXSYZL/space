@@ -49,6 +49,7 @@
         <!--表格 start-->
         <div style="width: 100%">
           <el-table
+            @row-click="rowClick"
             :data="msgs"
             :height=table_height
             size="medium"
@@ -71,19 +72,29 @@
             </el-table-column>
             <el-table-column
               label="内容"
-              style="width: 70%">
+              style="width: 50%"
+              >
               <template slot-scope="scope">
                 <span>
-                 {{scope.row.content}}
+                 {{scope.row.content| ellipsis}}
+                </span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="时间"
+              style="width: 50%">
+              <template slot-scope="scope">
+                <span>
+                 {{scope.row.postDate}}
                 </span>
               </template>
             </el-table-column>
             <el-table-column
               style="text-align: right;"
               width="80">
-              <template slot-scope="scope" style="text-align: right">
+              <template slot-scope="scope" style="text-align: center">
                 <el-button
-                  @click="replyButton(scope.row.authorName,scope.row.content,scope.row.authorId,scope.row.msgId)"
+                  @click.stop="replyButton(scope.row.authorName,scope.row.content,scope.row.authorId,scope.row.msgId)"
                   size="small">回复
                 </el-button>
               </template>
@@ -143,10 +154,39 @@
       </el-form>
       <span class="dialog-footer" slot="footer">
     <el-button @click="dialogVisible = false">取 消</el-button>
-    <el-button @click="replySubmit()" type="primary">确 定</el-button>
+    <el-button @click="replySubmit()" type="primary">回 复</el-button>
     </span>
     </el-dialog>
     <!--  回复消息弹窗 end-->
+
+    <!--详情页弹窗 start-->
+    <el-dialog
+      :visible.sync="Detailsdialog"
+      title="消息详情"
+      width="30%">
+      <el-form :model="Details" label-width="15%" ref="form" size="mini">
+        <el-form-item label="发送人:" class="Details">
+          <span>
+            {{Details.authorName}}
+          </span>
+        </el-form-item>
+        <el-form-item label="信息:" class="Details">
+          <span>
+            {{Details.content}}
+          </span>
+        </el-form-item>
+        <el-form-item label="发送时间:" class="Details">
+          <span>
+            {{Details.postDate}}
+          </span>
+        </el-form-item>
+      </el-form>
+      <span class="dialog-footer" slot="footer">
+    <el-button @click.stop="Detailsdialog = false" type="primary">确 定</el-button>
+    </span>
+    </el-dialog>
+    <!--  详情页弹窗 end-->
+
   </div>
 
 
@@ -167,6 +207,7 @@
         },
         table_height: '0px',
         loading: true,
+        Detailsdialog:false,
         dialogVisible: false,
         replyForm: {
           name: '',
@@ -175,9 +216,32 @@
           parentId: '',
           toId: ''
         },
+        Details:{
+          authorName:'',
+          content:'',
+          postDate:''
+        }
+      }
+    },
+    filters: {
+      ellipsis(value) {
+        if (!value) return "";
+        if (value.length > 50) {
+          return value.slice(0, 50) + "...";
+        }
+        return value;
       }
     },
     methods: {
+      //表格整行的点击事件
+      rowClick (val) {
+        console.log(val.authorName)
+        this.Detailsdialog = true
+        this.Details.authorName=val.authorName,
+        this.Details.content=val.content,
+        this.Details.postDate=val.postDate
+
+      },
       replyButton(name, receivedMessage, toId, parentId) {
         this.dialogVisible = true;
         this.replyForm.name = name;
@@ -311,7 +375,7 @@
   }
 </script>
 
-<style scoped>
+<style>
   .talk_title {
     font-family: 微软雅黑, serif;
     margin-left: 5%;
@@ -363,4 +427,8 @@
   #tab_1, #tab_2:hover {
     cursor: pointer;
   }
+  .Details .el-form-item__label{
+    font-size: 15px;
+  }
+  .el-tooltip__popper.is-dark{display:none !important;}
 </style>
