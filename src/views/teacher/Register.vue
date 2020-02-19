@@ -52,7 +52,7 @@
         />
       </el-form-item>
 
-      <el-form-item prop="contact">
+      <el-form-item prop="tel">
         <el-input
           type="contact"
           v-model="myForm.tel"
@@ -67,12 +67,11 @@
           style="width:100%;"
           @click="handleSubmit"
           :loading="logining"
-          round
         >注册
         </el-button>
       </el-form-item>
       <el-form-item style="width:100%;">
-        <el-button type="text" @click="login" style="margin-left: auto">已有账号?前往登录</el-button>
+        <el-button type="text" @click="login" style="margin-left: auto;color: #F56C6C">已有账号?前往登录</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -80,20 +79,35 @@
 
 <script>
   export default {
-    data () {
-      const validatePass = (rule, value, callback) => {
+    data: function () {
+      const validatePass1 = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入密码'))
+        }  else if (value.length < 6) {
+          callback(new Error('密码长度最小6位'));
+        } else if (value.length > 12) {
+          callback(new Error('密码长度最大12位'));
+        } else {
+          callback();
+        }
+      };
+      const validatePass2 = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请再次输入密码'))
-        } else if (value !== this.myForm.firstPassword) {
+        } else if (value.length < 6) {
+          callback(new Error('密码长度最小6位'));
+        } else if (value.length > 12) {
+          callback(new Error('密码长度最大12位'));
+        }else if (value !== this.myForm.firstPassword) {
           callback(new Error('两次输入密码不一致!'))
-        } else {
-          callback()
+        }  else {
+          callback();
         }
-      }
+      };
       return {
         logining: false,
         myForm: {
-          account:'',
+          account: '',
           name: '',
           firstPassword: '',
           secondPassword: '',
@@ -101,12 +115,19 @@
           tel: ''
         },
         myRule: {
-          account: [{ required: true, message: '请输入登录账号', trigger: 'blur' }],
-
-          name: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
-          firstPassword: [{ required: true, message: '请输入密码', trigger: 'blur' }],
-          secondPassword: [{ validator: validatePass, trigger: 'blur' }],
-          select: [{ required: true, message: '请选择用户类型', trigger: 'blur' }],
+          account: [{required: true, message: '请输入登录账号', trigger: 'blur'}],
+          name: [{required: true, message: '请输入昵称', trigger: 'blur'}],
+          firstPassword: [{validator: validatePass1, trigger: 'blur'}],
+          secondPassword: [{validator: validatePass2, trigger: 'blur'}],
+          select: [{required: true, message: '请选择用户类型', trigger: 'blur'}],
+          tel:[{ required: true,message: '请输入手机号码',trigger: 'blur'},
+                  {validator:function(rule,value,callback){
+                    if(/^1[34578]\d{9}$/.test(value) == false){
+                      callback(new Error("请输入正确的手机号"));
+                    }else{
+                      callback();
+                    }
+                  }, trigger: 'blur'}],
         },
         checked: false,
         options: [
@@ -172,12 +193,13 @@
                   })
                 }
                 that.logining = false
-              }).bind(this)
+              })
               .catch(function (error) {
                 console.log(error)
                 that.logining = false
               })
           } else {
+            that.logining = false
             console.log('error submit!')
             return false
           }

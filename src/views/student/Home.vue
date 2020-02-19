@@ -31,8 +31,8 @@
 
 <script>
   // @ is an alias to /src
-  import SideBar from '../../components/teacher/SideBar'
-  import Header from '../../components/teacher/Header'
+  import SideBar from '../../components/student/SideBar'
+  import Header from '../../components/student/Header'
   export default {
     name: 'home',
     components: { Header, SideBar },
@@ -44,7 +44,7 @@
       if (!sessionStorage.getItem('user')) {
         this.$router.replace('/login')
       }
-      if (sessionStorage.getItem('loginType')!=='教师') {
+      if (sessionStorage.getItem('loginType')!=='学生') {
         this.$router.replace('/login')
       }
     }

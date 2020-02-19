@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <div style="min-height: 100%;min-width: 100%;display: flex">
+    <div style="min-width: 100%;display: flex;position: absolute;left: 50%;top: 50%;transform: translate(-50%,-50%);">
       <!--左边 start-->
       <div class="left_div">
         <div>
@@ -37,7 +37,7 @@
     name: 'Header',
     data () {
       return {
-        turn_off_icon: require('../assets/turn_off.png'),
+        turn_off_icon: require('../../assets/turn_off.png'),
         userName: ''
       }
     },

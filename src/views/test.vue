@@ -1,171 +1,261 @@
 <template>
-  <div>
+  <div :style="getScrenHeight">
     <!--头部部分 start-->
-    <div style="margin-top: 2%;height: 10%">
-      <h4 class="talk_title">讨论</h4>
+    <div style="padding-top: 2%;height:10%">
+      <h4 class="talk_title">课程</h4>
       <div class="divide_1"/>
       <div style="height: 5%">
-        <h5 class="msg_title">发送消息</h5>
+        <h5 class="msg_title">课程列表</h5>
       </div>
       <hr class="divide_2">
     </div>
+
+    <!--搜索框 start-->
+    <div style="display: flex;width: 20%; height: 5%;padding-left: 5%;padding-top: 1%;padding-bottom: 1%;">
+
+      <el-input
+        clearable
+        placeholder="输入关键字搜索"
+        size="50%"
+        v-model="selectContent"
+      />
+      <!--      <div style="font-size: 40px">-->
+      <!--      <i class="el-icon-search"></i>-->
+      <el-button @click="select()" icon="el-icon-search" style="margin-left: 15px" type="danger">搜索</el-button>
+      <!--      </div>-->
+    </div>
+    <!--搜索框 end-->
+    <!--课程列表 start-->
+    <div style="height: 5%">
+      <h5 class="msg_title">课时列表</h5>
+    </div>
+    <!--课程列表 end-->
     <!--头部部分 end-->
-    <div style="margin-top: 3%;height: 90%;">
-      <div style="width: 50%;min-height: 500px;margin-right: 5%;margin-left: 5%; position:absolute;">
+    <div style="margin-top: 2%;height: 90%">
+      <!--分割线 start-->
+      <div class="divide_1"/>
+      <!--分割线 end-->
+      <!--表格区域 start-->
+      <div class="table_area">
 
-        <!--课时名称 start-->
-        <el-form  label-width="80px" ref="createLessonForm" size="medium" :rules="createLessonRule" :model="createLessonForm" >
+        <!--表格 start-->
+        <div style="width: 100%">
+          <el-table
+            :data="msgs"
+            :height=table_height
+            size="medium"
+            style="width: 100%;min-width: 100%;"
+            v-loading="loading"
+          >
+            <!--序号 start-->
+            <el-table-column
+              label="课程名称"
+              min-width="150">
+              <template slot-scope="scope">
+                <span>
+                  {{scope.row.courseName}}
+                </span>
+              </template>
+            </el-table-column>
+            <!--序号 end-->
 
-          <!--选择分页 start-->
-          <el-form-item label="联系人:" prop="contactID">
-            <el-select v-model="createLessonForm.contactID" popper-class="selectJob" size="small"  >
-              <el-option v-for="(item,index) in restoreTable" :key="index" :label="item.courseName" :value="item.contactID">
-                <span style="float: left;width: 120px" :title="item.name">{{item.courseName}}</span>
-              </el-option>
-              <div style="text-align: center">
-                <el-button class="text" @click.stop="prevePage"  v-show="selectPage!==1"  >上一页</el-button>
-                <el-button class="text" @click.stop="prevePage"  v-show="selectPage===1"  disabled>上一页</el-button>
-                <el-button class="text" @click.stop="nextPage" v-show="selectPage!==pageCount">下一页</el-button>
-                <el-button class="text" @click.stop="nextPage" v-show="selectPage===pageCount" disabled>下一页</el-button>
-              </div>
-            </el-select>
-          </el-form-item>
-          <!--选择分页 end-->
+            <el-table-column
+              label="课时名称"
+              min-width="150">
+              <template slot-scope="scope">
+                <span>
+                  {{scope.row.workName}}
+                </span>
+              </template>
+            </el-table-column>
 
-          <!--作业描述 start-->
-          <el-form-item label="内容:" prop="content">
-            <el-input
-              style="width: 300px"
-              type="textarea"
-              resize="none"
-              :autosize="{ minRows: 5, maxRows: 10}"
-              placeholder="请回复内容"
-              v-model="createLessonForm.content">
-            </el-input>
-          </el-form-item>
-          <!--作业描述 end-->
+            <el-table-column
+              label="提交时间"
+              min-width="200">
+              <template slot-scope="scope">
+                <span>
+                 {{scope.row.deadline}}
+                </span>
+              </template>
+            </el-table-column>
 
-          <!--按钮 start-->
-          <el-form-item size="large">
-            <el-button @click="onSubmit" type="danger" style="width: 180px;margin-right: 5%">发送</el-button>
-            <el-button style="width: 180px">取消</el-button>
-          </el-form-item>
-          <!--按钮 end-->
-        </el-form>
+            <el-table-column
+              label="作业描述"
+              min-width="150"
+            >
+              <template slot-scope="scope">
+                <span>
+                 {{scope.row.workDesc}}
+                </span>
+              </template>
+            </el-table-column>
+
+            <el-table-column
+              label="提交情况"
+              min-width="150">
+              <template slot-scope="scope">
+
+                <el-progress :percentage=scope.row.progress*100 :stroke-width="7"
+                             v-if="scope.row.progress!=null"></el-progress>
+                <el-progress :percentage=0 :stroke-width="7" v-if="scope.row.progress==null"></el-progress>
+              </template>
+            </el-table-column>
+
+            <el-table-column
+              style="text-align: right;">
+              <template slot-scope="scope" style="text-align: right">
+                <el-button
+                  @click="enterLesson(scope.row.workId, scope.row.progress,scope.row.workName)"
+                  size="small"
+                  type="danger">进入课时
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <!--表格 end-->
+        <!--分页 start-->
+        <div class="block" style="text-align: right">
+          <el-pagination
+            :current-page="pageNo"
+            :page-size="pageSize"
+            :page-sizes="[10, 20, 30]"
+            :total="total"
+            @current-change="handleCurrentChange"
+            @size-change="handleSizeChange"
+            layout="total, sizes, prev, pager, next, jumper">
+          </el-pagination>
+        </div>
+        <!--分页 start-->
       </div>
-
+      <!--表格区域 end-->
     </div>
   </div>
 </template>
 
 <script>
   export default {
-    name: 'CreateLesson',
+    name: 'Message',
     data() {
       return {
-        /*选择课程 start*/
-        total: null ,// 获取总数据量
-        pageCount: null, // 获取总页数
-        selectPage: 1, // 当前页数
-        restoreTable: [], //当前页数数据
-        /*选择课程 end*/
-
-        createLessonForm:{
-          contactID:'',
-          content: '',
+        selectContent: '',
+        msgs: [],
+        pageSize: 10,
+        pageNo: 1,
+        total: 0,
+        selectIndex: 1,
+        screen: {
+          height: ''
         },
-
-        createLessonRule:{
-          contactID: [{ required: true, message: '请选择课程', trigger: 'blur' }],
-          content: [{ required: true, message: '请输入作业描述', trigger: 'blur' }],
-        }
-      };
-    },
-    mounted() {
-      this.getTableList(); // 初始化
+        table_height: '0px',
+        loading: true
+      }
     },
     methods: {
-      /*选择课程 start*/
-      getTableList(form = {}) {
+      select() {
+        if (this.selectContent.split(" ").join("").length !== 0) {
+          this.loading = true;
+          let url = '/api/teacher/searchWork';
+          this.msgs = [];
+          this.$axios.get(url, {
+            params: {
+              pageNo: this.pageNo,
+              pageSize: this.pageSize,
+              searchKey: this.selectContent
+            }
+          }).then(res => {
+            console.log(res);
+            if (res.data.status === 'success') {
+              this.msgs = res.data.data.list;
+              this.total = res.data.data.pageRows;
+              this.getTableHeight()
+            } else {
+              this.$message.error(res.data.data.errMsg)
+            }
+            this.loading = false
+          }).catch(err => {
+            this.$message.error(err.data.data.errMsg);
+            this.loading = false
+          })
+        } else {
+          this.$message.error('请输入搜索内容')
+        }
+      },
+      getScrenHeight() {
+        this.screen.height = window.innerHeight
+      },
+      getTableHeight() {
+        const a = (window.innerHeight - 180) * 2 / 3;
+        if (a > 500) {
+          this.table_height = a - 15 + 'px'
+        } else {
+          this.table_height = '420px'
+        }
+        console.log(this.table_height)
+      },
+      enterLesson(workId, progress, workName) {
+        if (progress == null) {
+          progress = 0
+        }
+        console.log(workId);
+        console.log(progress);
+        console.log(workName);
+        this.$router.push(
+          {
+            path: '/submissionsList',
+            query: {
+              workId: workId,
+              progress: progress * 100,
+              workName: workName
+            }
 
-        let url = '/api/teacher/getCourseList';
+          });
+      },
+      handleSizeChange(val) {
+        this.pageNo = 1;
+        this.pageSize = val;
+        this.getMsg()
+      },
+      handleCurrentChange(val) {
+        this.pageNo = val;
+        this.getMsg();
+        console.log(`当前页: ${val}`)
+      },
+      getMsg() {
+        this.loading = true;
+        let url = '/api/student/getOptionalCourseList';
         this.msgs = [];
 
         this.$axios.get(url, {
           params: {
-            pageNo: this.selectPage,
-            pageSize: 5,
-
+            pageNo: this.pageNo,
+            pageSize: this.pageSize
           }
         }).then(res => {
           console.log(res);
-
           if (res.data.status === 'success') {
-            this.restoreTable = res.data.data.list;
-            this.total = res.data.data.pageRows; // 数据总数量
+            this.msgs = res.data.data.list;
+            this.total = res.data.data.pageRows;
 
-            this.pageCount = res.data.data.pageCount; // 因为我每次只请求20条， 所以算出总页数
-            this.selectCourseID = this.restoreTable[0].id; // 因为每次都选取第一条数据;
+            this.getTableHeight()
           } else {
             this.$message.error(res.data.data.errMsg)
           }
-          this.loading=false
+          this.loading = false
         }).catch(err => {
-          this.$message.error(err.data.data.errMsg)
-          this.loading=false
+          this.$message.error(err.data.data.errMsg);
+          this.loading = false
         })
       },
-      prevePage() {
-        --this.selectPage;
-        if (this.selectPage < 1) { // 判断点击的页数是否小于1
-          this.selectPage = 1;
-        }
 
-        this.getTableList();
-      },
-      nextPage() {
-        if (this.selectPage < this.pageCount) { // 判断点击的页数是否小于总页数;
-          ++this.selectPage;
-          this.getTableList();
-        }
-      },
-      /*选择课程 end*/
-
-      onSubmit() {
-
-        this.$refs.createLessonForm.validate(valid => {
-          if (valid) {
-            let url = '/api/teacher/createWork'
-            const date = this.createLessonForm.submissionDate.toString();
-            this.$axios.get(url, {
-              params: {
-                courseId: this.createLessonForm.selectCourseID,
-                deadline: date,
-                workDesc:  this.createLessonForm.lessonDescription,
-                workName: this.createLessonForm.lessonName,
-              }
-            }).then(res => {
-              console.log(res)
-              if (res.data.status === 'success'&&res.data.data === 'success') {
-                console.log(this.createLessonForm.selectCourseID);
-                this.$message.success('创建课时成功')
-              } else {
-                this.$message.error(res.data.data.errMsg)
-                console.log(this.createCourseForm.deadline);
-              }
-
-            }).catch(err => {
-              this.$message.error(err.data.data.errMsg)
-            })
-
-          } else {
-            console.log('error submit!')
-            return false
-          }
-        })
-      },
-      handleChange(value) {
-        console.log(value);
+    },
+    activated() {
+      this.getScrenHeight();
+      this.getMsg()
+    },
+    created() {
+      if (sessionStorage.getItem('selectIndex')) {
+        this.selectIndex = sessionStorage.getItem('selectIndex')
       }
     }
   }
@@ -198,5 +288,29 @@
   .divide_2 {
     margin-top: 1%;
     color: #f3f3f3;
+  }
+
+  .active {
+    color: #f55d54;
+  }
+
+  .nav {
+    bottom: 0;
+    display: block;
+    height: 2px;
+    margin-top: 2px;
+    background-color: #f55d54;
+    transition: all .2s ease-out;
+  }
+
+  .table_area {
+    min-height: 470px;
+    width: 90%;
+    margin-right: 5%;
+    margin-left: 5%;
+  }
+
+  #tab_1, #tab_2:hover {
+    cursor: pointer;
   }
 </style>
