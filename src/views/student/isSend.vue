@@ -202,7 +202,7 @@
       getMsg () {
         this.loading=true
 
-        let url = '/api/student/getMySendMsg'
+        let url = '/api/teacher/getMySendMsg'
         this.msgs = []
         this.$axios.get(url, {
           params: {

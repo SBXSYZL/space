@@ -15,17 +15,6 @@
         </center>
       </el-form-item>
 
-      <el-form-item prop="select">
-        <el-select placeholder="请选择用户类型" style="width:100%" v-model="myForm.select">
-          <el-option
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-            v-for="item in options"
-          ></el-option>
-        </el-select>
-      </el-form-item>
-
       <el-form-item prop="account">
         <el-input auto-complete="off" placeholder="请输入账号" type="text" v-model="myForm.account"/>
       </el-form-item>
@@ -37,18 +26,30 @@
           v-model="myForm.password"
         />
       </el-form-item>
+
+      <el-form-item prop="select">
+        <el-select placeholder="请选择用户类型" style="width:100%" v-model="myForm.select">
+          <el-option
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+            v-for="item in options"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+
       <el-form-item style="width:100%;">
         <el-button
           @click="handleSubmit"
-          round
           style="width:100%;"
           type="danger"
         >登录
         </el-button>
       </el-form-item>
 
+
       <el-form-item style="width:100%;">
-        <el-button type="text" @click="register" style="margin-left: auto">未有账号?前往注册</el-button>
+        <el-button type="text" @click="register" style="margin-left: auto; color: #F56C6C">未有账号?前往注册</el-button>
       </el-form-item>
     </el-form>
 
@@ -58,6 +59,17 @@
 <script>
   export default {
     data () {
+      const validatePass = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入密码'))
+        }  else if (value.length < 6) {
+          callback(new Error('密码长度最小6位'));
+        } else if (value.length > 12) {
+          callback(new Error('密码长度最大12位'));
+        } else {
+          callback();
+        }
+      };
       return {
         logining: false,
         myForm: {
@@ -67,7 +79,7 @@
         },
         myRule: {
           account: [{ required: true, message: '请输入账号', trigger: 'blur' }],
-          password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+          password: [{ validator: validatePass, trigger: 'blur' }],
           select: [{ required: true, message: '请选择用户类型', trigger: 'blur' }]
         },
         checked: false,
@@ -122,12 +134,15 @@
                   that.logining = false
                   sessionStorage.setItem('userName', response.data.data)
                   sessionStorage.setItem('user', that.myForm.account)
+                  sessionStorage.setItem('loginType', that.myForm.select)
                   if(that.myForm.select === '学生')
                   {
-                    that.$message.error('学生端尚未上线,尽情期待')
+                    // that.$message.error('学生端尚未上线,尽情期待')
+                    that.$router.replace({path: '/student'})
+                    that.open()
                   }
                   else if(that.myForm.select === '教师') {
-                    that.$router.replace({path: '/'})
+                    that.$router.replace({path: '/teacher'})
                     that.open()
                   }
                 } else {

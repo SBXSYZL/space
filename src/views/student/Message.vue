@@ -255,7 +255,7 @@
           this.$message.error('请填写回复内容')
         } else {
           const that = this;
-          let url = '/api/teacher/replyMessage';
+          let url = '/api/student/replyMessage';
           let param = new URLSearchParams();
           param.append('content', this.replyForm.replyMessage);
           param.append('parentId', this.replyForm.parentId);
@@ -285,7 +285,7 @@
           });
       },
       Send() {
-        this.$router.push({path: '/isSend',})
+        this.$router.push({path: '/StuIsSend',})
       },
       getScrenHeight() {
         this.screen.height = window.innerHeight - 100 + 'px'
@@ -318,8 +318,8 @@
       },
       getMsg() {
         this.loading = true;
-        let url_1 = '/api/teacher/getHaveReadMessageList';
-        let url_2 = '/api/teacher/getUnreadMessageList';
+        let url_1 = '/api/student/getHaveReadMessageList';
+        let url_2 = '/api/student/getUnreadMessageList';
         let url = null;
         this.msgs = [];
         if (this.selectIndex == 1) {

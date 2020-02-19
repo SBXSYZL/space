@@ -1,14 +1,15 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/teacher/Home.vue'
+import teacherHome from '../views/teacher/Home.vue'
+import studentHome from '../views/student/Home.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    name: 'home',
-    component: Home,
+    path: '/teacher',
+    name: 'teacherHome',
+    component: teacherHome,
     children: [
       {
         path: '/createCourse',
@@ -60,6 +61,43 @@ const routes = [
       }
     ]
   },
+
+  {
+    path: '/student',
+    name: 'studentHome',
+    component: studentHome,
+    children: [
+      {
+        path: '/StuSelectCourse',
+        component: resolve => require(['../views/student/SelectCourse.vue'], resolve)
+      },
+      {
+        path: '/StuSelectLesson',
+        component: resolve => require(['../views/student/SelectLesson.vue'], resolve)
+      },
+      {
+        path: '/StuMessage',
+        component: resolve => require(['../views/student/Message.vue'], resolve)
+      },
+      {
+        path: '/StuContact',
+        component: resolve => require(['../views/student/Contact.vue'], resolve)
+      },
+
+      {
+        path: '/StuIsSend',
+        component: resolve => require(['../views/student/isSend.vue'], resolve)
+      },
+      {
+        path: '/StuCourseList',
+        component: resolve => require(['../views/student/CourseList.vue'], resolve)
+      },
+      {
+        path: '/',
+        redirect: '/StuCourseList'
+      }
+    ]
+  },
   {
     path: '/about',
     name: 'about',
@@ -82,6 +120,10 @@ const routes = [
     path:'/test',
     name:'test',
     component: () => import( '../views/test.vue')
+  },
+  {
+    path: '/',
+    redirect: '/login'
   }
 
 ]

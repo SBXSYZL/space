@@ -4,19 +4,20 @@
       <div class="menu"
            v-for="item in titles"
            :key="item.id">
+
         <!--一级标签 start-->
         <div style="padding-top: 5px;height:30px;display: flex; vertical-align: center;align-content: start">
           <div style="margin-top: 3px;padding-right: 5px;width: 20%;text-align: right;vertical-align: center">
             <img style="height: 20px;width: 20px" :src="item.icon"/>
           </div>
-          <div style="margin-top: 2px;width: 80%;text-align: start">
-            <h4>
-              {{item.title}}
-            </h4>
-
+          <div style="margin-top: 0px;width: 80%;text-align: start">
+            <p style="font-size: 23px;">
+              <b>{{item.title}}</b>
+            </p>
           </div>
         </div>
         <!--一级标签 end-->
+
         <!--二级标签按钮 start-->
         <div>
           <div class="menu_item"
@@ -26,7 +27,7 @@
              menu_it:defaultActive!=menu_item.menuId}"
                :key="menu_item.menuId">
             <div style="padding-left: 35%">
-              <p>
+              <p style="font-size: 20px;letter-spacing:6px">
                 {{menu_item.name}}
               </p>
             </div>
@@ -46,7 +47,7 @@
         titles: [
           {
             id: 1,
-            icon: require('../assets/menu.png'),
+            icon: require('../../assets/menu.png'),
             title: '课程',
             menu: [
               {
@@ -63,7 +64,7 @@
           },
           {
             id: 2,
-            icon: require('../assets/dir.png'),
+            icon: require('../../assets/dir.png'),
             title: '课时作业',
             menu: [
               {
@@ -80,7 +81,7 @@
           },
           {
             id: 3,
-            icon: require('../assets/talk.png'),
+            icon: require('../../assets/talk.png'),
             title: '讨论',
             menu: [
               {
@@ -97,7 +98,7 @@
           },
           {
             id: 4,
-            icon: require('../assets/movie.png'),
+            icon: require('../../assets/movie.png'),
             title: '教学课件',
             menu: [
               // {

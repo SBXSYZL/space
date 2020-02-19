@@ -2,24 +2,32 @@
   <div :style="getScrenHeight">
     <!--头部部分 start-->
     <div style="padding-top: 2%;height:10%">
-      <div style="margin-left: 5%">
-        <el-button @click="returnSelectCourse" size="medium" type="info">返回</el-button>
-      </div>
+      <h4 class="talk_title">课时作业</h4>
       <div class="divide_1"/>
-      <div style="height: 10%">
-        <div style="text-align: center;  display:flex;">
-          <span style="height:40px;line-height:40px;"><b class="msg_title" style="margin-left: 80px; font-size: 25px">{{lessonData.workName}}</b></span>
-          <span style="height:40px;line-height:40px;"><b class="msg_title" style="margin-left: 40px;font-size: 15px">课程进度</b></span>
-          <el-progress :percentage=lessonData.progress :stroke-width="10"
-                       style="width: 10%;height:40px;line-height:40px; margin-left: 40px"></el-progress>
-        </div>
+      <div style="height: 5%">
+        <h5 class="msg_title">选择课时</h5>
       </div>
       <hr class="divide_2">
     </div>
 
+    <!--搜索框 start-->
+    <div style="display: flex;width: 20%; height: 5%;padding-left: 5%;padding-top: 1%;padding-bottom: 1%;">
+
+      <el-input
+        clearable
+        placeholder="输入关键字搜索"
+        size="50%"
+        v-model="selectContent"
+      />
+      <!--      <div style="font-size: 40px">-->
+      <!--      <i class="el-icon-search"></i>-->
+      <el-button @click="select()" icon="el-icon-search" style="margin-left: 15px" type="danger">搜索</el-button>
+      <!--      </div>-->
+    </div>
+    <!--搜索框 end-->
     <!--课程列表 start-->
     <div style="height: 5%">
-      <h5 class="msg_title">课程列表</h5>
+      <h5 class="msg_title">课时列表</h5>
     </div>
     <!--课程列表 end-->
     <!--头部部分 end-->
@@ -41,71 +49,68 @@
           >
             <!--序号 start-->
             <el-table-column
-              label="序号"
-              type="index">
+              label="课程名称"
+              min-width="150">
+              <template slot-scope="scope">
+                <span>
+                  {{scope.row.courseName}}
+                </span>
+              </template>
             </el-table-column>
             <!--序号 end-->
 
             <el-table-column
-              label="姓名"
-              min-width="100">
+              label="课时名称"
+              min-width="150">
               <template slot-scope="scope">
                 <span>
-                  {{scope.row.userName}}
+                  {{scope.row.workName}}
                 </span>
               </template>
             </el-table-column>
 
             <el-table-column
-              label="作业"
-              min-width="100">
+              label="提交时间"
+              min-width="200">
               <template slot-scope="scope">
-                <el-button
-                  @click.stop="downloadWorkFile(scope.row.content,scope.row.submitId)"
-                  size="mini"
-                  type="primary"
-                >下载
-                </el-button>
-
+                <span>
+                 {{scope.row.deadline}}
+                </span>
               </template>
             </el-table-column>
 
             <el-table-column
-              label="是否提交"
-              min-width="150">
-              <template slot-scope="scope">
-                <el-radio-group v-model="scope.row.submitStatus" >
-                  <el-radio :label="1">提交</el-radio>
-                  <el-radio :label="0">未提交</el-radio>
-                </el-radio-group>
-              </template>
-            </el-table-column>
-
-            <el-table-column
-              label="评分"
-              min-width="100"
+              label="作业描述"
+              min-width="150"
             >
               <template slot-scope="scope">
-                <el-input
-                  clearable
-                  placeholder="请输入内容"
-                  v-model="scope.row.score">
-                </el-input>
+                <span>
+                 {{scope.row.workDesc}}
+                </span>
               </template>
             </el-table-column>
 
-            <el-table-column>
+            <el-table-column
+              label="提交情况"
+              min-width="150">
               <template slot-scope="scope">
-                <div style="text-align: right;margin-right: 1%">
-                  <el-button
-                    @click.stop="submit(scope.row.score,scope.row.submitStatus,scope.row.submitId)"
-                    size="mini"
-                    type="danger">提交
-                  </el-button>
-                </div>
+
+                <el-progress :percentage=scope.row.progress*100 :stroke-width="7"
+                             v-if="scope.row.progress!=null"></el-progress>
+                <el-progress :percentage=0 :stroke-width="7" v-if="scope.row.progress==null"></el-progress>
               </template>
             </el-table-column>
 
+            <el-table-column
+              style="text-align: right;">
+              <template slot-scope="scope" style="text-align: right">
+                <el-button
+                  @click="enterLesson(scope.row.workId, scope.row.progress,scope.row.workName)"
+                  size="small"
+                  type="danger">进入课时
+                </el-button>
+              </template>
+            </el-table-column>
           </el-table>
         </div>
         <!--表格 end-->
@@ -130,11 +135,9 @@
 
 <script>
   export default {
-    name: 'ElectiveList',
+    name: 'Message',
     data() {
       return {
-        Homework: '',
-        radio: 1,
         selectContent: '',
         msgs: [],
         pageSize: 10,
@@ -145,33 +148,28 @@
           height: ''
         },
         table_height: '0px',
-        lessonData: [],
-        loading: true,
+        loading: true
       }
     },
     methods: {
-      submit(Homework, radio, submitId) {
-        console.log(Homework, radio);
-        if (Homework == null) {
-          this.$message.error('请填写评分')
-        } else if (radio == null) {
-          this.$message.error('请选择学生是否提交作业')
-        } else {
+      select() {
+        if (this.selectContent.split(" ").join("").length !== 0) {
           this.loading = true;
-          let url = '/api/teacher/gradeAssignment';
-
+          let url = '/api/teacher/searchWork';
+          this.msgs = [];
           this.$axios.get(url, {
             params: {
-              score: Homework,
-              status: radio,
-              submitId: submitId
+              pageNo: this.pageNo,
+              pageSize: this.pageSize,
+              searchKey: this.selectContent
             }
           }).then(res => {
             console.log(res);
             if (res.data.status === 'success') {
-              this.$message.success('提交成功')
+              this.msgs = res.data.data.list;
+              this.total = res.data.data.pageRows;
+              this.getTableHeight()
             } else {
-              console.log(this.lessonData.workId);
               this.$message.error(res.data.data.errMsg)
             }
             this.loading = false
@@ -179,52 +177,9 @@
             this.$message.error(err.data.data.errMsg);
             this.loading = false
           })
+        } else {
+          this.$message.error('请输入搜索内容')
         }
-      },
-      downloadWorkFile(content, submitId) {
-          try {
-            let a = document.createElement('a')
-            a.href = '/api/teacher/downloadSubmitWork?content=' + content+'&workId='+submitId
-            a.click()
-          }catch (e) {
-            this.$message.error('该学生尚未上传作业文件');
-          }
-
-          // this.$message.error('该学生尚未上传作业文件');
-
-        // this.$router.back()
-        // this.$message.error('该学生尚未上传作业文件');
-
-        // let url = '/api/teacher/downloadSubmitWork';
-        // this.$axios.get(url, {
-        //   params: {
-        //     content: content,
-        //     submitId: submitId,
-        //   }
-        // }).then(res => {
-        //   console.log(res);
-        //   if (res.data.status === 'success') {
-        //
-        //   } else {
-        //     console.log(this.courseData.courseId);
-        //     this.$message.error(res.data.data.errMsg)
-        //   }
-        //   this.loading = false
-        // }).catch(err => {
-        //   this.$message.error('该学生尚未上传作业文件');
-        //   this.loading = false
-        // })
-      },
-      returnSelectCourse() {
-        this.loading = false;
-        console.log("返回");
-        this.$router.back();
-
-      },
-      getParams() {
-        this.lessonData = this.$route.query;
-        this.lessonData.progress = Number(this.lessonData.progress);
-        console.log(this.lessonData.progress + 'test')
       },
       getScrenHeight() {
         this.screen.height = window.innerHeight
@@ -238,9 +193,23 @@
         }
         console.log(this.table_height)
       },
-      enterCourse(courseId, progress) {
-        console.log(courseId);
+      enterLesson(workId, progress, workName) {
+        if (progress == null) {
+          progress = 0
+        }
+        console.log(workId);
+        console.log(progress);
+        console.log(workName);
+        this.$router.push(
+          {
+            path: '/submissionsList',
+            query: {
+              workId: workId,
+              progress: progress * 100,
+              workName: workName
+            }
 
+          });
       },
       handleSizeChange(val) {
         this.pageNo = 1;
@@ -249,19 +218,18 @@
       },
       handleCurrentChange(val) {
         this.pageNo = val;
+        this.getMsg();
         console.log(`当前页: ${val}`)
-        this.getMsg()
       },
       getMsg() {
         this.loading = true;
-        let url = '/api/teacher/getListOfStudentSubmissionsForTheClass';
+        let url = '/api/student/getWorkOfCourse';
         this.msgs = [];
 
         this.$axios.get(url, {
           params: {
             pageNo: this.pageNo,
-            pageSize: this.pageSize,
-            workId: this.lessonData.workId
+            pageSize: this.pageSize
           }
         }).then(res => {
           console.log(res);
@@ -271,7 +239,6 @@
 
             this.getTableHeight()
           } else {
-            console.log(this.lessonData.workId);
             this.$message.error(res.data.data.errMsg)
           }
           this.loading = false
@@ -279,13 +246,18 @@
           this.$message.error(err.data.data.errMsg);
           this.loading = false
         })
-      }
+      },
+
     },
     activated() {
-      this.getParams();
       this.getScrenHeight();
       this.getMsg()
     },
+    created() {
+      if (sessionStorage.getItem('selectIndex')) {
+        this.selectIndex = sessionStorage.getItem('selectIndex')
+      }
+    }
   }
 </script>
 
@@ -338,15 +310,7 @@
     margin-left: 5%;
   }
 
-  .el-progress {
-    width: 100%;
-  }
-
   #tab_1, #tab_2:hover {
     cursor: pointer;
-  }
-
-  .el-progress {
-    width: 100%;
   }
 </style>
