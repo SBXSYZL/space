@@ -16,7 +16,7 @@
         <!--面包屑 end-->
         <hr/>
         <div style="display: flex;margin: 5px">
-          <el-button @click="preBread" v-show="breadCrumbs.length==1" icon="el-icon-arrow-left">返回</el-button>
+          <el-button @click="preBread" v-show="breadCrumbs.length>1" icon="el-icon-arrow-left">返回</el-button>
           <el-button @click="uploadVisible">上传文件</el-button>
           <el-button @click="createFolderVisible=true">创建文件夹</el-button>
           <el-button @click="refresh">刷新</el-button>

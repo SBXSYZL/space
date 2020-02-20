@@ -71,7 +71,7 @@
               min-width="150">
               <template slot-scope="scope">
                 <span>
-                  {{scope.row.workName}}
+                  {{scope.row.authorName}}
                 </span>
               </template>
             </el-table-column>
@@ -81,7 +81,7 @@
               min-width="200">
               <template slot-scope="scope">
                 <span>
-                 {{scope.row.deadline}}
+                 {{scope.row.courseDeadline}}
                 </span>
               </template>
             </el-table-column>
@@ -92,7 +92,7 @@
             >
               <template slot-scope="scope">
                 <span>
-                 {{scope.row.workDesc}}
+                 {{scope.row.courseDesc}}
                 </span>
               </template>
             </el-table-column>
@@ -101,13 +101,45 @@
               label="课程得分"
               min-width="150"
             >
-              <template slot-scope="scope">
-                <span>
-                 {{scope.row.workDesc}}
-                </span>
+
+              <template slot-scope="scope" >
+                <el-popover
+                  placement="top"
+                  trigger="click"
+                  width="200"
+                >
+                  <el-table :data="scoreMsgs" ref="scoreMsgs" >
+
+                      <el-table-column label="作业得分"  width="50"  >
+                          <span>
+                            {{scoreMsgs.workScore}}
+                          </span>
+                      </el-table-column>
+
+                      <el-table-column label="课堂表现"  width="50" >
+                          <span>
+                            {{scoreMsgs.performanceScore}}
+                          </span>
+                      </el-table-column>
+
+                      <el-table-column label="测试得分"  width="50" >
+                          <span>
+                            {{scoreMsgs.examScore}}
+                          </span>
+                      </el-table-column>
+
+                      <el-table-column label="课程得分"  width="50" >
+                          <span>
+                            {{scoreMsgs.totalScore}}
+                          </span>
+                      </el-table-column>
+
+                  </el-table>
+
+                  <el-button  slot="reference" type="danger" @click="getScore(scope.row.courseId) ">查看成绩</el-button>
+                </el-popover>
               </template>
             </el-table-column>
-
 
           </el-table>
         </div>
@@ -136,7 +168,9 @@
     name: 'Message',
     data() {
       return {
+        visible: false,
         selectContent: '',
+        scoreMsgs: [{}],
         msgs: [],
         pageSize: 10,
         pageNo: 1,
@@ -150,6 +184,29 @@
       }
     },
     methods: {
+      getScore(courseId) {
+        this.scoreMsgs=[{}]
+        let url_1 = '/api/student/getCourseScore';
+        this.$axios.get(url_1, {
+          params: {
+            courseId: courseId
+          }
+        }).then(res => {
+          console.log(res);
+          if (res.data.status === 'success') {
+              this.$set(this.scoreMsgs, 'workScore', res.data.data.workScore)
+              this.$set(this.scoreMsgs, 'performanceScore', res.data.data.performanceScore)
+              this.$set(this.scoreMsgs, 'examScore', res.data.data.examScore)
+              this.$set(this.scoreMsgs, 'totalScore', res.data.data.totalScore)
+
+            console.log(this.scoreMsgs)
+          } else {
+            this.$message.error(res.data.data.errMsg)
+          }
+        }).catch(err => {
+          this.$message.error(err.data.data.errMsg);
+        })
+      },
       select() {
         if (this.selectContent.split(" ").join("").length !== 0) {
           this.loading = true;
@@ -166,6 +223,7 @@
             if (res.data.status === 'success') {
               this.msgs = res.data.data.list;
               this.total = res.data.data.pageRows;
+              console.log(this.msgs);
               this.getTableHeight()
             } else {
               this.$message.error(res.data.data.errMsg)
@@ -221,10 +279,10 @@
       },
       getMsg() {
         this.loading = true;
-        let url = '/api/student/getSelectedCourseList';
+        let url_1 = '/api/student/getSelectedCourseList';
         this.msgs = [];
 
-        this.$axios.get(url, {
+        this.$axios.get(url_1, {
           params: {
             pageNo: this.pageNo,
             pageSize: this.pageSize
@@ -245,11 +303,11 @@
           this.loading = false
         })
       },
-
     },
+
     activated() {
       this.getScrenHeight();
-      this.getMsg()
+      this.getMsg();
     },
     created() {
       if (sessionStorage.getItem('selectIndex')) {

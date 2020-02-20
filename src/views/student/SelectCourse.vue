@@ -69,7 +69,7 @@
               min-width="100">
               <template slot-scope="scope">
                 <span>
-                  {{}}
+                  {{scope.row.authorName}}
                 </span>
               </template>
             </el-table-column>
