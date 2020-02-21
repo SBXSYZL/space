@@ -49,13 +49,8 @@
           >
             <!--序号 start-->
             <el-table-column
-              label="课程名称"
-              min-width="150">
-              <template slot-scope="scope">
-                <span>
-                  {{scope.row.courseName}}
-                </span>
-              </template>
+              label="序号"
+              type="index">
             </el-table-column>
             <!--序号 end-->
 
@@ -91,23 +86,12 @@
             </el-table-column>
 
             <el-table-column
-              label="提交情况"
-              min-width="150">
-              <template slot-scope="scope">
-
-                <el-progress :percentage=scope.row.progress*100 :stroke-width="7"
-                             v-if="scope.row.progress!=null"></el-progress>
-                <el-progress :percentage=0 :stroke-width="7" v-if="scope.row.progress==null"></el-progress>
-              </template>
-            </el-table-column>
-
-            <el-table-column
               style="text-align: right;">
               <template slot-scope="scope" style="text-align: right">
                 <el-button
-                  @click="enterLesson(scope.row.workId, scope.row.progress,scope.row.workName)"
+                  @click="uploadVisible(scope.row.courseId,scope.row.workId)"
                   size="small"
-                  type="danger">进入课时
+                  type="danger">提交作业
                 </el-button>
               </template>
             </el-table-column>
@@ -130,6 +114,24 @@
       </div>
       <!--表格区域 end-->
     </div>
+    <!--上传文件弹窗 start-->
+    <el-dialog title="上传文件" :visible.sync="uploadOuter">
+      <!--      <el-dialog-->
+      <!--        width="30%"-->
+      <!--        title="内层 Dialog"-->
+      <!--        :visible.sync="uploadInner"-->
+      <!--        append-to-body>-->
+      <!--      </el-dialog>-->
+      <input type="file" ref="file" style="width: 200px;height: 25px"/>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="uploadOuter = false">取 消</el-button>
+        <el-button type="primary" @click="upload">上传</el-button>
+      </div>
+    </el-dialog>
+    <!--上传文件弹窗 end-->
+
+
+
   </div>
 </template>
 
@@ -138,6 +140,7 @@
     name: 'Message',
     data() {
       return {
+        uploadOuter:false,
         selectContent: '',
         msgs: [],
         pageSize: 10,
@@ -148,10 +151,56 @@
           height: ''
         },
         table_height: '0px',
-        loading: true
+        loading: true,
+        courseId:'',
+        workId:''
       }
     },
     methods: {
+      //上传窗口打开
+      uploadVisible (courseId,workId) {
+        this.uploadOuter = true
+        this.workId=workId;
+        this.courseId=courseId
+      },
+      //上传文件
+      upload () {
+        this.submitUrl = '/api/student/submitWork'
+        let file = this.$refs.file.files[0]
+        if (!file) {
+          this.$message({
+            message: '文件未选取',
+            type: 'warning'
+          })
+          return
+        }
+        let dataFile = new FormData()
+        dataFile.append('file', file)
+        dataFile.append('workId ', this.workId)
+        dataFile.append('courseId', this.courseId)
+        let config = {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        }
+        const instance = this.$axios.create({ withCredentials: true })
+        instance.post(this.submitUrl, dataFile, config).then(res => {
+          // console.log(res)
+          if (res.data.status == 'success' && res.data.data == 'success') {
+            this.$message({
+              message: '上传成功',
+              type: 'success'
+            })
+            this.$refs.file.value =''
+            this.uploadOuter=false
+            this.getFilesUnderFolder()
+          } else {
+            this.$message.error(res.data.data.errMsg)
+          }
+          // console.log(res)
+        }).catch(err => {
+          this.$message.error(err.data.data.errMsg)
+          return false
+        })
+      },
       select() {
         if (this.selectContent.split(" ").join("").length !== 0) {
           this.loading = true;
@@ -192,24 +241,6 @@
           this.table_height = '420px'
         }
         console.log(this.table_height)
-      },
-      enterLesson(workId, progress, workName) {
-        if (progress == null) {
-          progress = 0
-        }
-        console.log(workId);
-        console.log(progress);
-        console.log(workName);
-        this.$router.push(
-          {
-            path: '/submissionsList',
-            query: {
-              workId: workId,
-              progress: progress * 100,
-              workName: workName
-            }
-
-          });
       },
       handleSizeChange(val) {
         this.pageNo = 1;

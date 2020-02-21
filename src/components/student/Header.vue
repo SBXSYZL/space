@@ -6,8 +6,18 @@
         <div>
           <h2 style="font-family: 等线;color: #717171">学生</h2>
         </div>
-        <div style="padding-top: 1%;margin-left: 2%">
-          <a href="#" style="color: #20a0ff">{{userName}}</a>
+        <div style="padding-top: 1%;margin-left: 3%">
+
+          <el-popover
+            placement="bottom-start"
+            trigger="click"
+            width="200"
+            visible-arrow
+          >
+            <el-input></el-input>
+            <a href="#" style="color: #20a0ff" @click="Personal()" slot="reference">{{userName}}</a>
+          </el-popover>
+
         </div>
       </div>
       <!--左边 end-->
@@ -42,6 +52,22 @@
       }
     },
     methods: {
+      Personal()
+      {
+        let url_1 = '/api/student/getInfo';
+        this.$axios.get(url_1, {
+        }).then(res => {
+          console.log(res);
+          if (res.data.status === 'success') {
+            console.log(res.data.data)
+          } else {
+            this.$message.error(res.data.data.errMsg)
+          }
+        }).catch(err => {
+          this.$message.error(err.data.data.errMsg);
+        })
+
+      },
       turnOff () {
         sessionStorage.clear()
         this.$router.replace('/login')

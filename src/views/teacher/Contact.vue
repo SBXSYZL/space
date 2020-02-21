@@ -100,6 +100,10 @@
 
     methods: {
       remoteMethod(query) {
+        if(this.query!=query)
+        {
+          this.selectPage=1
+        }
         console.log(query);
         if(query.split(" ").join("").length !== 0) {
           let url = '/api/teacher/searchUser';
@@ -140,14 +144,15 @@
         if (this.selectPage < 1) { // 判断点击的页数是否小于1
           this.selectPage = 1;
         }
-
-        this.getTableList();
+        this.remoteMethod(this.query);
+        console.log(this.selectPage)
       },
       nextPage() {
         if (this.selectPage < this.pageCount) { // 判断点击的页数是否小于总页数;
           ++this.selectPage;
-          this.getTableList();
         }
+        console.log(this.selectPage)
+        this.remoteMethod(this.query);
       },
       /*选择课程 end*/
 
