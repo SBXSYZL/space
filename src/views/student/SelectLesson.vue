@@ -204,7 +204,7 @@
       select() {
         if (this.selectContent.split(" ").join("").length !== 0) {
           this.loading = true;
-          let url = '/api/teacher/searchWork';
+          let url = '/api/student/searchMyWork';
           this.msgs = [];
           this.$axios.get(url, {
             params: {
@@ -235,11 +235,17 @@
       },
       getTableHeight() {
         const a = (window.innerHeight - 180) * 2 / 3;
-        if (a > 500) {
-          this.table_height = a - 15 + 'px'
-        } else {
-          this.table_height = '420px'
+        this.table_height = a - 15 + 'px'
+        if(a>450) {
+          this.table_height = a + 'px'
         }
+        else if(a<200)
+        {
+          this.table_height = 150 + 'px'
+        }
+
+
+        console.log(a)
         console.log(this.table_height)
       },
       handleSizeChange(val) {

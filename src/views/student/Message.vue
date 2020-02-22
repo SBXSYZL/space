@@ -27,7 +27,10 @@
           </div>
           <!--未读 start-->
           <div :class="{active:selectIndex==2}" @click="changeTab(2)" id="tab_2">
-            <span :key="2" style="font-size: 20px;"><b>未读</b></span>
+            <el-badge :value="badge" v-if="badge>0">
+              <span :key="2" style="font-size: 20px;"><b>未读</b></span>
+            </el-badge>
+            <span :key="2" style="font-size: 20px;" v-if="badge==0"><b>未读</b></span>
             <div :class="{nav:selectIndex==2}"/>
           </div>
           <!--未读 end-->
@@ -73,7 +76,7 @@
             <el-table-column
               label="内容"
               style="width: 50%"
-              >
+            >
               <template slot-scope="scope">
                 <span>
                  {{scope.row.content| ellipsis}}
@@ -197,6 +200,7 @@
     name: 'Message',
     data() {
       return {
+        badge:0,
         msgs: [],
         pageSize: 10,
         pageNo: 1,
@@ -238,8 +242,8 @@
         console.log(val.authorName)
         this.Detailsdialog = true
         this.Details.authorName=val.authorName,
-        this.Details.content=val.content,
-        this.Details.postDate=val.postDate
+          this.Details.content=val.content,
+          this.Details.postDate=val.postDate
 
       },
       replyButton(name, receivedMessage, toId, parentId) {
@@ -255,7 +259,7 @@
           this.$message.error('请填写回复内容')
         } else {
           const that = this;
-          let url = '/api/student/replyMessage';
+          let url = '/api/teacher/replyMessage';
           let param = new URLSearchParams();
           param.append('content', this.replyForm.replyMessage);
           param.append('parentId', this.replyForm.parentId);
@@ -267,7 +271,7 @@
                 that.$message.success('回复成功');
                 that.dialogVisible = false;
                 that.replyForm.replyMessage='';
-                that.getMsg();
+                that.firstGetMsgs();
               } else {
                 that.$message.error('请填写回复内容')
               }
@@ -292,10 +296,13 @@
       },
       getTableHeight() {
         const a = (window.innerHeight - 100) * 2 / 3;
-        if (a > 500) {
+        this.table_height = a - 15 + 'px'
+        if(a>450) {
           this.table_height = a + 'px'
-        } else {
-          this.table_height = '420px'
+        }
+        else if(a<200)
+        {
+          this.table_height = 150 + 'px'
         }
 
         console.log(this.table_height)
@@ -317,6 +324,8 @@
         this.getMsg()
       },
       getMsg() {
+
+        console.log('index'+this.selectIndex)
         this.loading = true;
         let url_1 = '/api/student/getHaveReadMessageList';
         let url_2 = '/api/student/getUnreadMessageList';
@@ -335,6 +344,7 @@
         }).then(res => {
           console.log(res);
           if (res.data.status === 'success') {
+
             this.msgs = res.data.data.list;
             this.total = res.data.data.pageRows;
             this.getTableHeight()
@@ -345,6 +355,35 @@
         }).catch(err => {
           this.$message.error(err.data.data.errMsg);
           this.loading = false
+        })
+      },
+      firstGetMsgs()
+      {
+        let url = '/api/student/getUnreadMessageList';
+        this.$axios.get(url, {
+          params: {
+            pageNo: this.pageNo,
+            pageSize: this.pageSize
+          }
+        }).then(res => {
+          if (res.data.status === 'success') {
+            if(res.data.data.list.length>0)
+            {
+              this.selectIndex = 2;
+              this.badge=res.data.data.list.length
+              console.log('index'+this.selectIndex)
+              console.log('badge'+this.badge)
+            }
+            else {
+              this.selectIndex = 1;
+            }
+            sessionStorage.setItem('selectIndex', this.selectIndex)
+          } else {
+            this.$message.error(res.data.data.errMsg)
+          }
+          this.getMsg()
+        }).catch(err => {
+          this.$message.error(err.data.data.errMsg);
         })
       },
       changeTab(key) {
@@ -364,8 +403,9 @@
 
     },
     activated() {
+      this.firstGetMsgs();
       this.getScrenHeight();
-      this.getMsg()
+
     },
     created() {
       if (sessionStorage.getItem('selectIndex')) {
@@ -431,4 +471,5 @@
     font-size: 15px;
   }
   .el-tooltip__popper.is-dark{display:none !important;}
+
 </style>
