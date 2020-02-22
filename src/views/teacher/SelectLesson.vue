@@ -47,10 +47,18 @@
             style="width: 100%;min-width: 100%;"
             v-loading="loading"
           >
+
+            <!--序号 start-->
+            <el-table-column
+              label="序号"
+              type="index">
+            </el-table-column>
+            <!--序号 end-->
+
             <!--序号 start-->
             <el-table-column
               label="课程名称"
-              min-width="150">
+              min-width="50">
               <template slot-scope="scope">
                 <span>
                   {{scope.row.courseName}}
@@ -61,7 +69,7 @@
 
             <el-table-column
               label="课时名称"
-              min-width="150">
+              min-width="50">
               <template slot-scope="scope">
                 <span>
                   {{scope.row.workName}}
@@ -71,7 +79,7 @@
 
             <el-table-column
               label="提交时间"
-              min-width="200">
+              min-width="50">
               <template slot-scope="scope">
                 <span>
                  {{scope.row.deadline}}
@@ -81,7 +89,7 @@
 
             <el-table-column
               label="作业描述"
-              min-width="150"
+              min-width="120"
             >
               <template slot-scope="scope">
                 <span>
@@ -92,7 +100,7 @@
 
             <el-table-column
               label="提交情况"
-              min-width="150">
+              min-width="80">
               <template slot-scope="scope">
 
                 <el-progress :percentage=scope.row.progress*100 :stroke-width="7"
@@ -104,11 +112,17 @@
             <el-table-column
               style="text-align: right;">
               <template slot-scope="scope" style="text-align: right">
+                <div style="text-align: right;margin-right: 1%">
                 <el-button
                   @click="enterLesson(scope.row.workId, scope.row.progress,scope.row.workName)"
                   size="small"
                   type="danger">进入课时
                 </el-button>
+                  <el-button
+                    size="small"
+                    @click.stop="handleDelete(scope.$index, scope.row)">删除
+                  </el-button>
+                </div>
               </template>
             </el-table-column>
           </el-table>
@@ -152,6 +166,36 @@
       }
     },
     methods: {
+      handleDelete (index, row) {
+        this.$confirm('此操作将永久删除该课程, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let url='/api/teacher/deleteWork'
+          this.$axios.get(url,
+            { params: {
+                courseId:row.courseId
+              }
+            })
+            .then(res => {
+              console.log(res)
+            }).catch(err => {
+            console.log(err)
+          })
+          this.getMsg()
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.getMsg()
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      },
       select() {
         if (this.selectContent.split(" ").join("").length !== 0) {
           this.loading = true;

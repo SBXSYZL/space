@@ -5,7 +5,7 @@
       :rules="myRule"
       class="demo-ruleForm login-page"
       label-position="left"
-      label-width="0px"
+
       ref="myForm"
       status-icon
     >
@@ -71,6 +71,7 @@
         }
       };
       return {
+        msgheight:420,
         logining: false,
         myForm: {
           account: '',
@@ -109,7 +110,26 @@
           type: 'success'
         })
       },
+      getTableHeight() {
+        const a = (window.innerHeight - 180) * 2 / 3;
+        console.log(a)
+        this.msgheight = a - 50
+        if(this.msgheight<400)
+        {
+          this.msgheight=420
+        }
+        if (a > 500) {
+          this.msgheight = a - 30
+        }
+
+        console.log(this.msgheight)
+      },
+      enterCourse(courseId, progress) {
+        console.log(courseId);
+
+      },
       handleSubmit: function () {
+        this.getTableHeight()
         const that = this
         let url
         that.$refs.myForm.validate(valid => {
@@ -147,9 +167,12 @@
                   }
                 } else {
                   that.logining = false
-                  that.$alert('账号或密码错误', '温馨提示', {
-                    confirmButtonText: '确定'
-                  })
+                  that.$message.error({
+                    showClose: true,
+                    message: '账号或密码错误',
+                    offset:that.msgheight,
+                  });
+
                 }
               })
           } else {
@@ -170,7 +193,7 @@
   .login-page {
     -webkit-border-radius: 5px;
     border-radius: 5px;
-    margin: 180px auto;
+    margin: 10% auto;
     width: 350px;
     padding: 35px 35px 15px;
     background: #fff;
@@ -181,4 +204,5 @@
     margin: 0px 0px 15px;
     text-align: left;
   }
+
 </style>

@@ -61,7 +61,7 @@
               min-width="100">
               <template slot-scope="scope">
                 <el-button
-                  @click.stop="downloadWorkFile(scope.row.content,scope.row.submitId)"
+                  @click.stop="downloadWorkFile(scope.row.content,scope.row.workId)"
                   size="mini"
                   type="primary"
                 >下载
@@ -181,10 +181,10 @@
           })
         }
       },
-      downloadWorkFile(content, submitId) {
+      downloadWorkFile(content, workId) {
           try {
             let a = document.createElement('a')
-            a.href = '/api/teacher/downloadSubmitWork?content=' + content+'&workId='+submitId
+            a.href = '/api/teacher/downloadSubmitWork?content=' + content+'&workId='+workId
             a.click()
           }catch (e) {
             this.$message.error('该学生尚未上传作业文件');

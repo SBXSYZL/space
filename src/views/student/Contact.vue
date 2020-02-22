@@ -105,7 +105,7 @@
           this.selectPage=1
         }
 
-        console.log(query);
+        // console.log(query);
         if(query.split(" ").join("").length !== 0) {
           let url = '/api/student/searchUser';
           this.msgs = [];
@@ -117,11 +117,11 @@
               searchKey: query
             }
           }).then(res => {
-            console.log(res);
+            // console.log(res);
             this.list = res.data.data.list;
             this.total = res.data.data.pageRows; // 数据总数量
             this.pageCount = res.data.data.pageCount; // 因为我每次只请求20条， 所以算出总页数
-            console.log(this.list);
+            // console.log(this.list);
           }).catch(err => {
             this.$message.error(err.data.data.errMsg);
             this.loading = false
@@ -146,20 +146,20 @@
           this.selectPage = 1;
         }
         this.remoteMethod(this.query);
-        console.log(this.selectPage)
+        // console.log(this.selectPage)
       },
       nextPage() {
         if (this.selectPage < this.pageCount) { // 判断点击的页数是否小于总页数;
           ++this.selectPage;
           this.remoteMethod(this.query);
-          console.log(this.selectPage)
+          // console.log(this.selectPage)
         }
       },
       /*选择课程 end*/
 
       onSubmit() {
         const that = this
-          console.log(this.contactForm.contactID)
+          //console.log(this.contactForm.contactID)
         this.$refs.contactForm.validate(valid => {
           if (valid) {
             let url = '/api/student/writeMessageTo'
@@ -169,25 +169,25 @@
             param.append('content', this.contactForm.content)
             this.$axios.post(url, param)
               .then(function (res) {
-              console.log(res)
+              // console.log(res)
               if (res.data.status === 'success'&&res.data.data === 'success') {
-                console.log(that.contactForm.selectCourseID);
+                // console.log(that.contactForm.selectCourseID);
                 that.$message.success('发送消息成功')
                 that.contactForm.content='';
                 that.contactForm.contactID='';
               } else {
                 that.$message.error(res.data.data.errMsg)
-                console.log(this.createCourseForm.deadline);
+                // console.log(this.createCourseForm.deadline);
               }
             })
           } else {
-            console.log('error submit!')
+            // console.log('error submit!')
             return false
           }
         })
       },
       handleChange(value) {
-        console.log(value);
+        // console.log(value);
       }
     }
   }
