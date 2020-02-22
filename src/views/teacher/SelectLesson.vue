@@ -186,11 +186,17 @@
       },
       getTableHeight() {
         const a = (window.innerHeight - 180) * 2 / 3;
-        if (a > 500) {
-          this.table_height = a - 15 + 'px'
-        } else {
-          this.table_height = '420px'
+        this.table_height = a - 15 + 'px'
+        if(a>450) {
+          this.table_height = a + 'px'
         }
+        else if(a<200)
+        {
+          this.table_height = 150 + 'px'
+        }
+
+
+        console.log(a)
         console.log(this.table_height)
       },
       enterLesson(workId, progress, workName) {

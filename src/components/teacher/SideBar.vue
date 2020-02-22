@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper" style="overflow:auto">
     <div>
       <div class="menu"
            v-for="item in titles"

@@ -93,6 +93,10 @@ const routes = [
         component: resolve => require(['../views/student/CourseList.vue'], resolve)
       },
       {
+        path: '/StuDocumentList',
+        component: resolve => require(['../views/student/DocumentList.vue'], resolve)
+      },
+      {
         path: '/',
         redirect: '/StuCourseList'
       }
