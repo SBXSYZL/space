@@ -376,6 +376,7 @@
             }
             else {
               this.selectIndex = 1;
+              this.badge=0;
             }
             sessionStorage.setItem('selectIndex', this.selectIndex)
           } else {

@@ -55,6 +55,16 @@
             <!--序号 end-->
 
             <el-table-column
+              label="课程名称"
+              min-width="150">
+              <template slot-scope="scope">
+                <span>
+                  {{scope.row.courseName}}
+                </span>
+              </template>
+            </el-table-column>
+
+            <el-table-column
               label="课时名称"
               min-width="150">
               <template slot-scope="scope">

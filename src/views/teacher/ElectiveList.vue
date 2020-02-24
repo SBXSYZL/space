@@ -106,7 +106,7 @@
             >
               <template slot-scope="scope">
                 <span>
-                 {{((scope.row.examScore/3)+(scope.row.performanceScore/3)+(scope.row.workScore/3))}}
+                 {{parseFloat(((scope.row.examScore/3)+(scope.row.performanceScore/3)+(scope.row.workScore/3))).toFixed(2)}}
                 </span>
               </template>
             </el-table-column>
