@@ -167,7 +167,7 @@
     },
     methods: {
       submit(examScore, performanceScore, userId) {
-        console.log(examScore, performanceScore);
+        // console.log(examScore, performanceScore);
         if (examScore == null) {
           this.$message.error('请填写测试分')
         } else if (performanceScore == null) {
@@ -186,11 +186,11 @@
               userId: userId
             }
           }).then(res => {
-            console.log(res);
+            // console.log(res);
             if (res.data.status === 'success') {
               this.$message.success('提交成功')
             } else {
-              console.log(this.lessonData.workId);
+              // console.log(this.lessonData.workId);
               this.$message.error(res.data.data.errMsg)
             }
             this.loading = false
@@ -202,14 +202,14 @@
       },
       returnSelectCourse() {
         this.loading = false;
-        console.log("返回搜索课程页面");
+        // console.log("返回搜索课程页面");
         this.$router.back();
 
       },
       getParams() {
         this.courseData = this.$route.query;
         this.courseData.progress = Number(this.courseData.progress);
-        console.log(this.courseData)
+        // console.log(this.courseData)
       },
       getScrenHeight() {
         this.screen.height = window.innerHeight
@@ -221,10 +221,10 @@
         } else {
           this.table_height = '420px'
         }
-        console.log(this.table_height)
+        // console.log(this.table_height)
       },
       enterCourse(courseId, progress) {
-        console.log(courseId);
+        // console.log(courseId);
 
         this.$router.back();
       },
@@ -235,7 +235,7 @@
       },
       handleCurrentChange(val) {
         this.pageNo = val;
-        console.log(`当前页: ${val}`)
+        // console.log(`当前页: ${val}`)
         this.getMsg()
       },
       getMsg() {
@@ -250,14 +250,14 @@
             courseId: this.courseData.courseId
           }
         }).then(res => {
-          console.log(res);
+          // console.log(res);
           if (res.data.status === 'success') {
             this.msgs = res.data.data.list;
             this.total = res.data.data.pageRows;
 
             this.getTableHeight()
           } else {
-            console.log(this.courseData.courseId);
+            // console.log(this.courseData.courseId);
             this.$message.error(res.data.data.errMsg)
           }
           this.loading = false

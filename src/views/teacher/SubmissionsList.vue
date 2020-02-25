@@ -10,8 +10,18 @@
         <div style="text-align: center;  display:flex;">
           <span style="height:40px;line-height:40px;"><b class="msg_title" style="margin-left: 80px; font-size: 25px">{{lessonData.workName}}</b></span>
           <span style="height:40px;line-height:40px;"><b class="msg_title" style="margin-left: 40px;font-size: 15px">课程进度</b></span>
-          <el-progress :percentage=lessonData.progress :stroke-width="10"
-                       style="width: 10%;height:40px;line-height:40px; margin-left: 40px"></el-progress>
+          <el-progress
+            :percentage=lessonData.progress
+            :stroke-width="10"
+            v-if="lessonData.progress<=100"
+            style="width: 10%;height:40px;line-height:40px; margin-left: 40px"></el-progress>
+          <el-progress
+            :percentage=100
+            :stroke-width="10"
+            :format="format"
+            v-model="errorProgress=lessonData.progress"
+            v-else-if="lessonData.progress > 100"
+            style="width: 10%;height:40px;line-height:40px; margin-left: 40px"></el-progress>
         </div>
       </div>
       <hr class="divide_2">
@@ -147,11 +157,18 @@
         table_height: '0px',
         lessonData: [],
         loading: true,
+        errorProgress:0
       }
     },
     methods: {
+      format(percentage){
+        if(percentage>1)
+        {
+          return `${this.errorProgress}%`;
+        }
+      },
       submit(Homework, radio, submitId) {
-        console.log(Homework, radio);
+        // console.log(Homework, radio);
         if (Homework == null) {
           this.$message.error('请填写评分')
         } else if (radio == null) {
@@ -167,11 +184,11 @@
               submitId: submitId
             }
           }).then(res => {
-            console.log(res);
+            // console.log(res);
             if (res.data.status === 'success') {
               this.$message.success('提交成功')
             } else {
-              console.log(this.lessonData.workId);
+              // console.log(this.lessonData.workId);
               this.$message.error(res.data.data.errMsg)
             }
             this.loading = false
@@ -217,14 +234,14 @@
       },
       returnSelectCourse() {
         this.loading = false;
-        console.log("返回");
+        // console.log("返回");
         this.$router.back();
 
       },
       getParams() {
         this.lessonData = this.$route.query;
         this.lessonData.progress = Number(this.lessonData.progress);
-        console.log(this.lessonData.progress + 'test')
+        // console.log(this.lessonData.progress + 'test')
       },
       getScrenHeight() {
         this.screen.height = window.innerHeight
@@ -236,10 +253,10 @@
         } else {
           this.table_height = '420px'
         }
-        console.log(this.table_height)
+        // console.log(this.table_height)
       },
       enterCourse(courseId, progress) {
-        console.log(courseId);
+        // console.log(courseId);
 
       },
       handleSizeChange(val) {
@@ -249,7 +266,7 @@
       },
       handleCurrentChange(val) {
         this.pageNo = val;
-        console.log(`当前页: ${val}`)
+        // console.log(`当前页: ${val}`)
         this.getMsg()
       },
       getMsg() {
@@ -264,14 +281,14 @@
             workId: this.lessonData.workId
           }
         }).then(res => {
-          console.log(res);
+          // console.log(res);
           if (res.data.status === 'success') {
             this.msgs = res.data.data.list;
             this.total = res.data.data.pageRows;
 
             this.getTableHeight()
           } else {
-            console.log(this.lessonData.workId);
+            // console.log(this.lessonData.workId);
             this.$message.error(res.data.data.errMsg)
           }
           this.loading = false

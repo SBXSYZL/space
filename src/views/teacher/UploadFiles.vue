@@ -89,7 +89,7 @@
         this.submitUrl = '/api/teacher/uploadFile'
         let file = this.$refs.file.files[0]
         if (!file) {
-          console.log('文件未选取')
+          // console.log('文件未选取')
           return
         }
         let dataFile = new FormData()
@@ -101,7 +101,7 @@
         const instance = this.$axios.create({ withCredentials: true })
 
         instance.post(this.submitUrl, dataFile, config).then(res => {
-          console.log(res)
+          // console.log(res)
           if (res.data.status == 'success' && res.data.data == 'success') {
             this.$message({
               message: '上传成功',
@@ -110,27 +110,27 @@
           }else {
             this.$message.error(res.data.data.errMsg)
           }
-          console.log(res)
+          // console.log(res)
         }).catch(err => {
           this.$message.error(err.data.data.errMsg)
           return false
         })
       },
       handleChange (value) {
-        console.log(value)
+        // console.log(value)
       },
       handleRemove (file, fileList) {
-        console.log(file, fileList)
+        // console.log(file, fileList)
       },
       handlePictureCardPreview (file) {
         this.dialogImageUrl = file.url
         this.dialogVisible = true
       },
       handleRemove2 (file, fileList) {
-        console.log(file, fileList)
+        // console.log(file, fileList)
       },
       handlePreview (file) {
-        console.log(file)
+        // console.log(file)
       },
       handleExceed (files, fileList) {
         this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)

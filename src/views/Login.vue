@@ -112,7 +112,7 @@
       },
       getTableHeight() {
         const a = (window.innerHeight - 180) * 2 / 3;
-        console.log(a)
+        // console.log(a)
         this.msgheight = a - 50
         if(this.msgheight<400)
         {
@@ -122,10 +122,10 @@
           this.msgheight = a - 30
         }
 
-        console.log(this.msgheight)
+        // console.log(this.msgheight)
       },
       enterCourse(courseId, progress) {
-        console.log(courseId);
+        // console.log(courseId);
 
       },
       handleSubmit: function () {
@@ -148,7 +148,7 @@
             param.append('password', this.myForm.password)
             this.$axios.post(url, param)
               .then(function (response) {
-                console.log(response)
+                // console.log(response)
                 if (response.data.status === 'success' && response.data.data) {
 
                   that.logining = false
@@ -171,12 +171,13 @@
                     showClose: true,
                     message: '账号或密码错误',
                     offset:that.msgheight,
+                    duration:1500
                   });
 
                 }
               })
           } else {
-            console.log('error submit!')
+            // console.log('error submit!')
             return false
           }
         })

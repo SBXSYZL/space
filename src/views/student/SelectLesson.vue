@@ -125,21 +125,28 @@
       <!--表格区域 end-->
     </div>
     <!--上传文件弹窗 start-->
-    <el-dialog title="上传文件" :visible.sync="uploadOuter">
-      <!--      <el-dialog-->
-      <!--        width="30%"-->
-      <!--        title="内层 Dialog"-->
-      <!--        :visible.sync="uploadInner"-->
-      <!--        append-to-body>-->
-      <!--      </el-dialog>-->
-      <input type="file" ref="file" style="width: 200px;height: 25px"/>
-      <div slot="footer" class="dialog-footer">
+    <el-dialog :visible.sync="uploadOuter" title="上传文件" width="30%" destroy-on-close :before-close="closeDialog" >
+      <el-upload
+        :auto-upload="false"
+        :file-list="fileList"
+        :on-change="beforeUpload"
+        :on-remove="removeFile"
+        :on-exceed="repeatUpload"
+        action=""
+        class="upload-demo"
+        :limit="1"
+        list-type=""
+        ref="upload"
+      >
+        <el-button size="small" slot="trigger" type="primary">选取文件</el-button>
+      </el-upload>
+
+      <div class="dialog-footer" slot="footer">
         <el-button @click="uploadOuter = false">取 消</el-button>
-        <el-button type="primary" @click="upload">上传</el-button>
+        <el-button @click="upload" type="primary">上传</el-button>
       </div>
     </el-dialog>
     <!--上传文件弹窗 end-->
-
 
 
   </div>
@@ -150,7 +157,7 @@
     name: 'Message',
     data() {
       return {
-        uploadOuter:false,
+        uploadOuter: false,
         selectContent: '',
         msgs: [],
         pageSize: 10,
@@ -162,52 +169,71 @@
         },
         table_height: '0px',
         loading: true,
-        courseId:'',
-        workId:''
+        courseId: '',
+        workId: '',
+        fileList: [],
+        file: null
       }
     },
     methods: {
+      closeDialog(){
+        this.uploadOuter = false;
+        this.file = null;
+        this.fileList = []
+      },
+      repeatUpload(files, fileList){
+        this.$message({
+          message: '只能选取一个文件',
+          type: 'warning'
+        });
+      },
+      removeFile(file, fileList) {
+        this.file = null;
+        this.fileList = []
+      },
+      beforeUpload(file) {
+        this.file = file;
+      },
       //上传窗口打开
-      uploadVisible (courseId,workId) {
-        this.uploadOuter = true
-        this.workId=workId;
-        this.courseId=courseId
+      uploadVisible(courseId, workId) {
+        this.uploadOuter = true;
+        this.workId = workId;
+        this.courseId = courseId;
+        // console.log(this.file)
       },
       //上传文件
-      upload () {
-        this.submitUrl = '/api/student/submitWork'
-        let file = this.$refs.file.files[0]
-        if (!file) {
+      upload() {
+        this.submitUrl = '/api/student/submitWork';
+        if (this.file == null) {
           this.$message({
             message: '文件未选取',
             type: 'warning'
-          })
+          });
           return
         }
-        let dataFile = new FormData()
-        dataFile.append('file', file)
-        dataFile.append('workId ', this.workId)
-        dataFile.append('courseId', this.courseId)
+        let file = this.file.raw;
+        let dataFile = new FormData();
+        dataFile.append('file', file);
+        dataFile.append('workId ', this.workId);
+        dataFile.append('courseId', this.courseId);
         let config = {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        }
-        const instance = this.$axios.create({ withCredentials: true })
+          headers: {'Content-Type': 'multipart/form-data'}
+        };
+        const instance = this.$axios.create({withCredentials: true});
         instance.post(this.submitUrl, dataFile, config).then(res => {
           // console.log(res)
           if (res.data.status == 'success' && res.data.data == 'success') {
             this.$message({
               message: '上传成功',
               type: 'success'
-            })
-            this.$refs.file.value =''
-            this.uploadOuter=false
-            this.getFilesUnderFolder()
+            });
+            this.uploadOuter = false
           } else {
             this.$message.error(res.data.data.errMsg)
           }
           // console.log(res)
         }).catch(err => {
-          this.$message.error(err.data.data.errMsg)
+          this.$message.error(err.data.data.errMsg);
           return false
         })
       },
@@ -223,7 +249,7 @@
               searchKey: this.selectContent
             }
           }).then(res => {
-            console.log(res);
+            // console.log(res);
             if (res.data.status === 'success') {
               this.msgs = res.data.data.list;
               this.total = res.data.data.pageRows;
@@ -245,18 +271,16 @@
       },
       getTableHeight() {
         const a = (window.innerHeight - 180) * 2 / 3;
-        this.table_height = a - 15 + 'px'
-        if(a>450) {
+        this.table_height = a - 15 + 'px';
+        if (a > 450) {
           this.table_height = a + 'px'
-        }
-        else if(a<200)
-        {
+        } else if (a < 200) {
           this.table_height = 150 + 'px'
         }
 
 
-        console.log(a)
-        console.log(this.table_height)
+        // console.log(a);
+        // console.log(this.table_height)
       },
       handleSizeChange(val) {
         this.pageNo = 1;
@@ -266,7 +290,7 @@
       handleCurrentChange(val) {
         this.pageNo = val;
         this.getMsg();
-        console.log(`当前页: ${val}`)
+        // console.log(`当前页: ${val}`)
       },
       getMsg() {
         this.loading = true;
@@ -279,7 +303,7 @@
             pageSize: this.pageSize
           }
         }).then(res => {
-          console.log(res);
+          // console.log(res);
           if (res.data.status === 'success') {
             this.msgs = res.data.data.list;
             this.total = res.data.data.pageRows;

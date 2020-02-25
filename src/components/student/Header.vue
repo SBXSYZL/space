@@ -11,10 +11,19 @@
           <el-popover
             placement="bottom-start"
             trigger="click"
-            width="200"
-            visible-arrow
+            width="300"
           >
-            <el-input></el-input>
+            <el-form :model="Info" label-width="30%" ref="form" size="mini">
+              <el-form-item label="账号:">
+                <el-input  auto-complete="on"  style="width: 80%" v-model="Info.account" readonly></el-input>
+              </el-form-item>
+              <el-form-item label="昵称:">
+                <el-input auto-complete="on"  style="width: 80%" v-model="Info.nickName" readonly></el-input>
+              </el-form-item>
+              <el-form-item label="联系方式:">
+                <el-input auto-complete="on"  style="width: 80%" v-model="Info.tel" readonly></el-input>
+              </el-form-item>
+            </el-form>
             <a href="#" style="color: #20a0ff" @click="Personal()" slot="reference">{{userName}}</a>
           </el-popover>
 
@@ -48,25 +57,25 @@
     data () {
       return {
         turn_off_icon: require('../../assets/turn_off.png'),
-        userName: ''
+        userName: '',
+        Info:{}
       }
     },
     methods: {
       Personal()
       {
-        let url_1 = '/api/student/getInfo';
-        this.$axios.get(url_1, {
-        }).then(res => {
-          console.log(res);
+        let url= '/api/student/getInfo';
+        this.$axios.get(url).then(res => {
+          // console.log(res);
           if (res.data.status === 'success') {
-            console.log(res.data.data)
+            this.Info=res.data.data
+             // console.log(res.data.data)
           } else {
             this.$message.error(res.data.data.errMsg)
           }
         }).catch(err => {
           this.$message.error(err.data.data.errMsg);
         })
-
       },
       turnOff () {
         sessionStorage.clear()

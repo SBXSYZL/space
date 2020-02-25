@@ -101,11 +101,21 @@
             <el-table-column
               label="提交情况"
               min-width="80">
-              <template slot-scope="scope">
-
-                <el-progress :percentage=scope.row.progress*100 :stroke-width="7"
-                             v-if="scope.row.progress!=null"></el-progress>
-                <el-progress :percentage=0 :stroke-width="7" v-if="scope.row.progress==null"></el-progress>
+              <template slot-scope="scope" >
+                <el-progress
+                  :percentage=scope.row.progress*100
+                  :stroke-width="7"
+                  v-if="scope.row.progress<=1" ></el-progress>
+                <el-progress
+                  :percentage=100
+                  :stroke-width="7"
+                  :format="format"
+                  v-model="errorProgress=scope.row.progress"
+                  v-else-if="scope.row.progress > 1" ></el-progress>
+                <el-progress
+                  :percentage=0
+                  :stroke-width="7"
+                  v-else-if="scope.row.progress==null"></el-progress>
               </template>
             </el-table-column>
 
@@ -162,10 +172,17 @@
           height: ''
         },
         table_height: '0px',
-        loading: true
+        loading: true,
+        errorProgress:0
       }
     },
     methods: {
+      format(percentage){
+        if(percentage>1)
+        {
+          return `${this.errorProgress*100}%`;
+        }
+      },
       handleDelete (index, row) {
         this.$confirm('此操作将永久删除该课程, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -179,9 +196,9 @@
               }
             })
             .then(res => {
-              console.log(res)
+              // console.log(res)
             }).catch(err => {
-            console.log(err)
+            // console.log(err)
           })
           this.getMsg()
           this.$message({
@@ -208,7 +225,7 @@
               searchKey: this.selectContent
             }
           }).then(res => {
-            console.log(res);
+            // console.log(res);
             if (res.data.status === 'success') {
               this.msgs = res.data.data.list;
               this.total = res.data.data.pageRows;
@@ -240,16 +257,16 @@
         }
 
 
-        console.log(a)
-        console.log(this.table_height)
+        // console.log(a)
+        // console.log(this.table_height)
       },
       enterLesson(workId, progress, workName) {
         if (progress == null) {
           progress = 0
         }
-        console.log(workId);
-        console.log(progress);
-        console.log(workName);
+        // console.log(workId);
+        // console.log(progress);
+        // console.log(workName);
         this.$router.push(
           {
             path: '/submissionsList',
@@ -269,7 +286,7 @@
       handleCurrentChange(val) {
         this.pageNo = val;
         this.getMsg();
-        console.log(`当前页: ${val}`)
+        // console.log(`当前页: ${val}`)
       },
       getMsg() {
         this.loading = true;
@@ -282,7 +299,7 @@
             pageSize: this.pageSize
           }
         }).then(res => {
-          console.log(res);
+          // console.log(res);
           if (res.data.status === 'success') {
             this.msgs = res.data.data.list;
             this.total = res.data.data.pageRows;

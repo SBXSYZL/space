@@ -201,14 +201,14 @@
             courseId: courseId
           }
         }).then(res => {
-          console.log(res);
+          // console.log(res);
           if (res.data.status === 'success') {
               this.$set(this.scoreMsgs, 'workScore', res.data.data.workScore)
               this.$set(this.scoreMsgs, 'performanceScore', res.data.data.performanceScore)
               this.$set(this.scoreMsgs, 'examScore', res.data.data.examScore)
               this.$set(this.scoreMsgs, 'totalScore', res.data.data.totalScore)
 
-            console.log(this.scoreMsgs)
+            // console.log(this.scoreMsgs)
           } else {
             this.$message.error(res.data.data.errMsg)
           }
@@ -228,11 +228,11 @@
               searchKey: this.selectContent
             }
           }).then(res => {
-            console.log(res);
+            // console.log(res);
             if (res.data.status === 'success') {
               this.msgs = res.data.data.list;
               this.total = res.data.data.pageRows;
-              console.log(this.msgs);
+              // console.log(this.msgs);
               this.getTableHeight()
             } else {
               this.$message.error(res.data.data.errMsg)
@@ -261,16 +261,16 @@
         }
 
 
-        console.log(a)
-        console.log(this.table_height)
+        // console.log(a)
+        // console.log(this.table_height)
       },
       enterLesson(workId, progress, workName) {
         if (progress == null) {
           progress = 0
         }
-        console.log(workId);
-        console.log(progress);
-        console.log(workName);
+        // console.log(workId);
+        // console.log(progress);
+        // console.log(workName);
         this.$router.push(
           {
             path: '/submissionsList',
@@ -290,7 +290,7 @@
       handleCurrentChange(val) {
         this.pageNo = val;
         this.getMsg();
-        console.log(`当前页: ${val}`)
+        // console.log(`当前页: ${val}`)
       },
       getMsg() {
         this.loading = true;
@@ -303,7 +303,7 @@
             pageSize: this.pageSize
           }
         }).then(res => {
-          console.log(res);
+          // console.log(res);
           if (res.data.status === 'success') {
             this.msgs = res.data.data.list;
             this.total = res.data.data.pageRows;

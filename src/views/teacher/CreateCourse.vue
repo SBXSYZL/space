@@ -105,7 +105,7 @@
                 schedule: this.createCourseForm.num,
               }
             }).then(res => {
-              console.log(res)
+              // console.log(res)
               if (res.data.status === 'success'&&res.data.data === 'success') {
                this.$message.success('创建课程成功');
                 // sessionStorage.setItem('defaultActive', 2);
@@ -118,10 +118,10 @@
                 this.createCourseForm.deadline='';
                 this.createCourseForm.courseDescription= '';
                 this.createCourseForm.num= 1;
-               console.log(sessionStorage.getItem('defaultActive'))
+               // console.log(sessionStorage.getItem('defaultActive'))
               } else {
                 this.$message.error(res.data.data.errMsg)
-                console.log(this.createCourseForm.deadline);
+                // console.log(this.createCourseForm.deadline);
               }
 
             }).catch(err => {
@@ -129,7 +129,7 @@
             })
 
           } else {
-            console.log('error submit!')
+            // console.log('error submit!')
             return false
           }
         })
@@ -137,7 +137,7 @@
         //
       },
       handleChange(value){
-        console.log(value);
+        // console.log(value);
       }
     }
   };
