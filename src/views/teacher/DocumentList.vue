@@ -147,7 +147,8 @@
         loading: true,
         deleteDialog: false,
         uploadfileList: [],
-        file: null
+        file: null,
+        fileList:[]
       }
     },
     methods: {
