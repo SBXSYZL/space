@@ -71,19 +71,29 @@
       </div>
     </div>
     <!--上传文件弹窗 start-->
-    <el-dialog title="上传文件" :visible.sync="uploadOuter">
-      <!--      <el-dialog-->
-      <!--        width="30%"-->
-      <!--        title="内层 Dialog"-->
-      <!--        :visible.sync="uploadInner"-->
-      <!--        append-to-body>-->
-      <!--      </el-dialog>-->
-      <input type="file" ref="file" style="width: 200px;height: 25px"/>
-      <div slot="footer" class="dialog-footer">
+    <!--上传文件弹窗 start-->
+    <el-dialog :visible.sync="uploadOuter" title="上传文件" width="30%" destroy-on-close :before-close="closeDialog" >
+      <el-upload
+        :auto-upload="false"
+        :file-list="uploadfileList"
+        :on-change="beforeUpload"
+        :on-remove="removeFile"
+        :on-exceed="repeatUpload"
+        action=""
+        class="upload-demo"
+        :limit="1"
+        list-type=""
+        ref="upload"
+      >
+        <el-button size="small" slot="trigger" type="primary">选取文件</el-button>
+      </el-upload>
+
+      <div class="dialog-footer" slot="footer">
         <el-button @click="uploadOuter = false">取 消</el-button>
-        <el-button type="primary" @click="upload">上传</el-button>
+        <el-button @click="upload" type="primary">上传</el-button>
       </div>
     </el-dialog>
+    <!--上传文件弹窗 end-->
     <!--上传文件弹窗 end-->
     <!--创建文件夹弹窗 start-->
     <el-dialog title="新建文件夹" :visible.sync="createFolderVisible">
@@ -119,7 +129,6 @@
     data () {
       return {
         tableHeight:window.innerHeight - (window.innerHeight*0.35),
-        fileList: [],
         breadCrumbs: [
           {
             fileId: -1,
@@ -137,9 +146,29 @@
         },
         loading: true,
         deleteDialog: false,
+        uploadfileList: [],
+        file: null
       }
     },
     methods: {
+      closeDialog(){
+        this.uploadOuter = false;
+        this.file = null;
+        this.uploadfileList = []
+      },
+      repeatUpload(files, fileList){
+        this.$message({
+          message: '只能选取一个文件',
+          type: 'warning'
+        });
+      },
+      removeFile(file, fileList) {
+        this.file = null;
+        this.uploadfileList = []
+      },
+      beforeUpload(file) {
+        this.file = file;
+      },
       //获取当前目录下文件
       getFilesUnderFolder () {
         // console.log(this.breadCrumbs)
@@ -288,14 +317,14 @@
       //上传文件
       upload () {
         this.submitUrl = '/api/teacher/uploadFile'
-        let file = this.$refs.file.files[0]
-        if (!file) {
+        if (this.file == null) {
           this.$message({
             message: '文件未选取',
             type: 'warning'
-          })
+          });
           return
         }
+        let file = this.file.raw;
         let dataFile = new FormData()
         dataFile.append('file', file)
         let dir = this.makeBreadPath()
@@ -314,7 +343,6 @@
               message: '上传成功',
               type: 'success'
             })
-            this.$refs.file.value =''
             this.uploadOuter=false
             this.getFilesUnderFolder()
           } else {
