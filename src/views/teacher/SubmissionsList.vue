@@ -10,8 +10,18 @@
         <div style="text-align: center;  display:flex;">
           <span style="height:40px;line-height:40px;"><b class="msg_title" style="margin-left: 80px; font-size: 25px">{{lessonData.workName}}</b></span>
           <span style="height:40px;line-height:40px;"><b class="msg_title" style="margin-left: 40px;font-size: 15px">课程进度</b></span>
-          <el-progress :percentage=lessonData.progress :stroke-width="10"
-                       style="width: 10%;height:40px;line-height:40px; margin-left: 40px"></el-progress>
+          <el-progress
+            :percentage=lessonData.progress
+            :stroke-width="10"
+            v-if="lessonData.progress<=100"
+            style="width: 10%;height:40px;line-height:40px; margin-left: 40px"></el-progress>
+          <el-progress
+            :percentage=100
+            :stroke-width="10"
+            :format="format"
+            v-model="errorProgress=lessonData.progress"
+            v-else-if="lessonData.progress > 100"
+            style="width: 10%;height:40px;line-height:40px; margin-left: 40px"></el-progress>
         </div>
       </div>
       <hr class="divide_2">
@@ -147,9 +157,16 @@
         table_height: '0px',
         lessonData: [],
         loading: true,
+        errorProgress:0
       }
     },
     methods: {
+      format(percentage){
+        if(percentage>1)
+        {
+          return `${this.errorProgress}%`;
+        }
+      },
       submit(Homework, radio, submitId) {
         // console.log(Homework, radio);
         if (Homework == null) {

@@ -177,7 +177,7 @@
             param.append('tel', this.myForm.tel)
             this.$axios.post(url, param)
               .then(function (response) {
-                console.log(response)
+                // console.log(response)
                 if (
                   response.data.status === 'success' &&
                   response.data.data === 'success'
@@ -195,12 +195,12 @@
                 that.logining = false
               })
               .catch(function (error) {
-                console.log(error)
+                // console.log(error)
                 that.logining = false
               })
           } else {
             that.logining = false
-            console.log('error submit!')
+            // console.log('error submit!')
             return false
           }
         })
