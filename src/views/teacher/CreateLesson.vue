@@ -126,7 +126,7 @@
             pageSize: 5
           }
         }).then(res => {
-          console.log(res);
+          // console.log(res);
 
           if (res.data.status === 'success') {
             this.restoreTable = res.data.data.list;
@@ -174,9 +174,9 @@
                 workName: this.createLessonForm.lessonName,
               }
             }).then(res => {
-              console.log(res);
+              // console.log(res);
               if (res.data.status === 'success' && res.data.data === 'success') {
-                console.log(this.createLessonForm.selectCourseID);
+                // console.log(this.createLessonForm.selectCourseID);
                 this.$message.success('创建课时成功');
                 // sessionStorage.setItem('defaultActive', 4);
                 // this.$router.replace(
@@ -191,7 +191,7 @@
                 this.createLessonForm.lessonDescription = '';
               } else {
                 this.$message.error(res.data.data.errMsg);
-                console.log(this.createCourseForm.deadline);
+                // console.log(this.createCourseForm.deadline);
               }
 
             }).catch(err => {
@@ -199,13 +199,13 @@
             })
 
           } else {
-            console.log('error submit!');
+            // console.log('error submit!');
             return false
           }
         })
       },
       handleChange(value) {
-        console.log(value);
+        // console.log(value);
       }
     }
   }

@@ -162,7 +162,7 @@
               searchKey: this.selectContent
             }
           }).then(res => {
-            console.log(res);
+            // console.log(res);
             if (res.data.status === 'success') {
               this.msgs = res.data.data.list;
               this.total = res.data.data.pageRows;
@@ -196,8 +196,8 @@
         }
 
 
-        console.log(a)
-        console.log(this.table_height)
+        // console.log(a)
+        // console.log(this.table_height)
       },
       enterCourse(courseId) {
         let url = '/api/student/joinCourse';
@@ -206,7 +206,7 @@
             courseId: courseId,
           }
         }).then(res => {
-          console.log(res);
+          // console.log(res);
           if (res.data.status === 'success') {
             this.$message.success('加入课程成功!')
             this.getTableHeight()
@@ -226,7 +226,7 @@
         this.getMsg()
       },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`)
+        // console.log(`当前页: ${val}`)
         this.pageNo = val;
         this.getMsg()
       },
@@ -241,7 +241,7 @@
             pageSize: this.pageSize
           }
         }).then(res => {
-          console.log(res);
+          // console.log(res);
           if (res.data.status === 'success') {
             this.msgs = res.data.data.list;
             this.total = res.data.data.pageRows;

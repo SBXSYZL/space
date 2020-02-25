@@ -199,7 +199,7 @@
         this.uploadOuter = true;
         this.workId = workId;
         this.courseId = courseId;
-        console.log(this.file)
+        // console.log(this.file)
       },
       //上传文件
       upload() {
@@ -249,7 +249,7 @@
               searchKey: this.selectContent
             }
           }).then(res => {
-            console.log(res);
+            // console.log(res);
             if (res.data.status === 'success') {
               this.msgs = res.data.data.list;
               this.total = res.data.data.pageRows;
@@ -279,8 +279,8 @@
         }
 
 
-        console.log(a);
-        console.log(this.table_height)
+        // console.log(a);
+        // console.log(this.table_height)
       },
       handleSizeChange(val) {
         this.pageNo = 1;
@@ -290,7 +290,7 @@
       handleCurrentChange(val) {
         this.pageNo = val;
         this.getMsg();
-        console.log(`当前页: ${val}`)
+        // console.log(`当前页: ${val}`)
       },
       getMsg() {
         this.loading = true;
@@ -303,7 +303,7 @@
             pageSize: this.pageSize
           }
         }).then(res => {
-          console.log(res);
+          // console.log(res);
           if (res.data.status === 'success') {
             this.msgs = res.data.data.list;
             this.total = res.data.data.pageRows;

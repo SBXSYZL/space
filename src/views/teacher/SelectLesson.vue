@@ -179,9 +179,9 @@
               }
             })
             .then(res => {
-              console.log(res)
+              // console.log(res)
             }).catch(err => {
-            console.log(err)
+            // console.log(err)
           })
           this.getMsg()
           this.$message({
@@ -208,7 +208,7 @@
               searchKey: this.selectContent
             }
           }).then(res => {
-            console.log(res);
+            // console.log(res);
             if (res.data.status === 'success') {
               this.msgs = res.data.data.list;
               this.total = res.data.data.pageRows;
@@ -240,16 +240,16 @@
         }
 
 
-        console.log(a)
-        console.log(this.table_height)
+        // console.log(a)
+        // console.log(this.table_height)
       },
       enterLesson(workId, progress, workName) {
         if (progress == null) {
           progress = 0
         }
-        console.log(workId);
-        console.log(progress);
-        console.log(workName);
+        // console.log(workId);
+        // console.log(progress);
+        // console.log(workName);
         this.$router.push(
           {
             path: '/submissionsList',
@@ -269,7 +269,7 @@
       handleCurrentChange(val) {
         this.pageNo = val;
         this.getMsg();
-        console.log(`当前页: ${val}`)
+        // console.log(`当前页: ${val}`)
       },
       getMsg() {
         this.loading = true;
@@ -282,7 +282,7 @@
             pageSize: this.pageSize
           }
         }).then(res => {
-          console.log(res);
+          // console.log(res);
           if (res.data.status === 'success') {
             this.msgs = res.data.data.list;
             this.total = res.data.data.pageRows;

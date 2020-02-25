@@ -158,7 +158,7 @@
     },
     methods: {
       rowClick (val) {
-        console.log(val.authorName)
+        // console.log(val.authorName)
         this.Detailsdialog = true
         this.Details.authorName=val.authorName,
           this.Details.content=val.content,
@@ -168,7 +168,7 @@
       returnMessage()
       {
         this.loading = false;
-        console.log("返回信息页面");
+        // console.log("返回信息页面");
         this.$router.back();
       },
       getScrenHeight () {
@@ -182,20 +182,20 @@
           this.table_height = '420px'
         }
 
-        console.log(this.table_height)
+        // console.log(this.table_height)
       },
       handleEdit (index, row) {
-        console.log(index, row)
+        // console.log(index, row)
       },
       handleDelete (index, row) {
-        console.log(index, row)
+        // console.log(index, row)
       },
       handleSizeChange (val) {
         this.pageSize = val
         this.getMsg()
       },
       handleCurrentChange (val) {
-        console.log(`当前页: ${val}`)
+        // console.log(`当前页: ${val}`)
         this.pageNo = val
         this.getMsg()
       },
@@ -210,7 +210,7 @@
             pageSize: this.pageSize
           }
         }).then(res => {
-          console.log(res)
+          // console.log(res)
           if (res.data.status === 'success') {
             this.msgs = res.data.data.list
             this.total = res.data.data.pageRows

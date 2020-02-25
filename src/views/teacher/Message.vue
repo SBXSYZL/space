@@ -239,7 +239,7 @@
     methods: {
       //表格整行的点击事件
       rowClick (val) {
-        console.log(val.authorName)
+        // console.log(val.authorName)
         this.Detailsdialog = true
         this.Details.authorName=val.authorName,
         this.Details.content=val.content,
@@ -252,7 +252,7 @@
         this.replyForm.receivedMessage = receivedMessage;
         this.replyForm.toId = toId;
         this.replyForm.parentId = parentId;
-        console.log(this.replyForm);
+        // console.log(this.replyForm);
       },
       replySubmit() {
         if (this.replyForm.replyMessage == '') {
@@ -266,7 +266,7 @@
           param.append('toId', this.replyForm.toId);
           this.$axios.post(url, param)
             .then(function (response) {
-              console.log(response);
+              // console.log(response);
               if (response.data.status === 'success' && response.data.data) {
                 that.$message.success('回复成功');
                 that.dialogVisible = false;
@@ -278,7 +278,7 @@
             })
         }
 
-        console.log(this.replyForm);
+        // console.log(this.replyForm);
       },
       handleClose(done) {
         this.$confirm('确认关闭？')
@@ -305,13 +305,13 @@
           this.table_height = 150 + 'px'
         }
 
-        console.log(this.table_height)
+        // console.log(this.table_height)
       },
       handleEdit(index, row) {
-        console.log(index, row)
+        // console.log(index, row)
       },
       handleDelete(index, row) {
-        console.log(index, row)
+        // console.log(index, row)
       },
       handleSizeChange(val) {
         this.pageNo = 1;
@@ -319,13 +319,13 @@
         this.getMsg()
       },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+        // console.log(`当前页: ${val}`);
         this.pageNo = val;
         this.getMsg()
       },
       getMsg() {
 
-        console.log('index'+this.selectIndex)
+        // console.log('index'+this.selectIndex)
         this.loading = true;
         let url_1 = '/api/teacher/getHaveReadMessageList';
         let url_2 = '/api/teacher/getUnreadMessageList';
@@ -342,7 +342,7 @@
             pageSize: this.pageSize
           }
         }).then(res => {
-          console.log(res);
+          // console.log(res);
           if (res.data.status === 'success') {
 
             this.msgs = res.data.data.list;
@@ -371,8 +371,8 @@
             {
               this.selectIndex = 2;
               this.badge=res.data.data.list.length
-              console.log('index'+this.selectIndex)
-              console.log('badge'+this.badge)
+              // console.log('index'+this.selectIndex)
+              // console.log('badge'+this.badge)
             }
             else {
               this.selectIndex = 1;

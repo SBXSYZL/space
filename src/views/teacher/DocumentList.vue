@@ -401,7 +401,7 @@
             path = path + this.breadCrumbs[i].folderPath + '/'
           }
         }
-        console.log(path)
+        // console.log(path)
         return path
       },
       //表格整行的点击事件
@@ -454,9 +454,9 @@
           }
           this.$axios.get(url, { params: params })
             .then(res => {
-              console.log(res)
+              // console.log(res)
             }).catch(err => {
-            console.log(err)
+            // console.log(err)
           })
           this.getFilesUnderFolder()
           this.deleteDialog=false;
