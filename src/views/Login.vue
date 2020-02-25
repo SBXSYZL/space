@@ -191,6 +191,7 @@
     width: 100%;
     height: 100%;
   }
+
   .login-page {
     -webkit-border-radius: 5px;
     border-radius: 5px;
@@ -201,6 +202,7 @@
     border: 1px solid #eaeaea;
     box-shadow: 0 0 10px #cac6c6;
   }
+
   label.el-checkbox.rememberme {
     margin: 0px 0px 15px;
     text-align: left;

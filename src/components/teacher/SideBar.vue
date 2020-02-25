@@ -152,16 +152,19 @@
     min-height: 30px;
     padding-top: 17%;
   }
+
   .menu_item {
     min-height: 40px;
     padding-top: 10px;
     text-align: start;
     cursor: pointer;
   }
+
   .active_menu {
     background: #f55d54;
     color: #ffffff;
   }
+
   .menu_it:hover {
     background: #eaeaea;
   }
